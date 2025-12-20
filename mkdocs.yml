@@ -1,5 +1,6 @@
 site_name: AIチャットアプリ構築ガイド
 site_description: 非エンジニア向けのAIチャットアプリ構築手順書
+docs_dir: .
 theme:
   name: material
   language: ja
