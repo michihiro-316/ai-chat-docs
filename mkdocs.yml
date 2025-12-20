@@ -68,11 +68,13 @@ nav:
     - 構築手順書: bolt-supabase/02_setup.md
   - ソースコード:
     - Node.js:
+      - 概要: code/nodejs/index.md
       - backend.js: code/nodejs/backend.md
       - front.html: code/nodejs/front.md
       - script.js: code/nodejs/script.md
       - package.json: code/nodejs/package.md
     - Python:
+      - 概要: code/python/index.md
       - backend.py: code/python/backend.md
       - front.html: code/python/front.md
       - script.js: code/python/script.md
