@@ -869,8 +869,8 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 >
 > | 言語 | フォルダ | 特徴 |
 > |------|---------|------|
-> | **Node.js**（推奨） | [code/nodejs/](../code/nodejs/) | JavaScript。ウェブ開発で最も一般的 |
-> | Python | [code/python/](../code/python/) | AIや機械学習でよく使われる言語 |
+> | **Node.js**（推奨） | [code/nodejs/](../../code/nodejs/) | JavaScript。ウェブ開発で最も一般的 |
+> | Python | [code/python/](../../code/python/) | AIや機械学習でよく使われる言語 |
 >
 > 以下の手順は**Node.js版**で説明します。Python版を使う場合は、ランタイムを「Python 3.11」に変更し、`main.py`にbackend.pyの内容を貼り付けてください。
 
@@ -878,10 +878,10 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 >
 > | ファイル | 役割 | GCPでの操作 |
 > |---------|------|------------|
-> | [front.html](../code/nodejs/front.md) | 画面のデザイン（HTML/CSS） | 新規ファイルとして追加 |
-> | [script.js](../code/nodejs/script.md) | フロントエンドの処理（JavaScript） | 新規ファイルとして追加 |
-> | [backend.js](../code/nodejs/backend.md) | サーバー側の処理 | index.js に貼り付け |
-> | [package.json](../code/nodejs/package.md) | 使用するライブラリ一覧 | package.json に貼り付け |
+> | [front.html](../../code/nodejs/front.md) | 画面のデザイン（HTML/CSS） | 新規ファイルとして追加 |
+> | [script.js](../../code/nodejs/script.md) | フロントエンドの処理（JavaScript） | 新規ファイルとして追加 |
+> | [backend.js](../../code/nodejs/backend.md) | サーバー側の処理 | index.js に貼り付け |
+> | [package.json](../../code/nodejs/package.md) | 使用するライブラリ一覧 | package.json に貼り付け |
 
 ##### GCPへの貼り付け手順
 
@@ -889,19 +889,19 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 
 1. 左側のファイル一覧で「index.js」をクリック
 2. 既存のコードをすべて削除
-3. [backend.js](../code/nodejs/backend.md) の内容をコピーして貼り付け
+3. [backend.js](../../code/nodejs/backend.md) の内容をコピーして貼り付け
 
 **2. front.html を追加**
 
 1. 左側のファイル一覧の上にある「**＋**」ボタンをクリック
 2. ファイル名に「`front.html`」と入力
-3. [front.html](../code/nodejs/front.md) の内容をコピーして貼り付け
+3. [front.html](../../code/nodejs/front.md) の内容をコピーして貼り付け
 
 **3. script.js を追加**
 
 1. 左側のファイル一覧の上にある「**＋**」ボタンをクリック
 2. ファイル名に「`script.js`」と入力
-3. [script.js](../code/nodejs/script.md) の内容をコピーして貼り付け
+3. [script.js](../../code/nodejs/script.md) の内容をコピーして貼り付け
 
 > **重要: Firebase設定の書き換え**
 >
@@ -920,7 +920,7 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 
 1. 左側のファイル一覧で「package.json」をクリック
 2. 既存の内容をすべて削除
-3. [package.json](../code/nodejs/package.md) の内容をコピーして貼り付け
+3. [package.json](../../code/nodejs/package.md) の内容をコピーして貼り付け
 
 ### 5-5. デプロイ
 
