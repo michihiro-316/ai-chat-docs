@@ -1,0 +1,29 @@
+# package.json
+
+使用するライブラリ一覧
+
+```json
+{
+  "name": "ai-chat-app",
+  "version": "1.0.0",
+  "description": "AI チャットアプリケーション（Firebase Auth認証 + メール制限機能付き）",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "openai": "^4.0.0"
+  },
+  "comment": [
+    "【このファイルについて】",
+    "Node.js のプロジェクト設定ファイルです。",
+    "使用するライブラリとそのバージョンを定義しています。",
+    "",
+    "【GCPでの使い方】",
+    "1. Cloud Run functions の作成画面を開く",
+    "2. 「ソースコード」→「インラインエディタ」を選択",
+    "3. index.js に backend.js の内容を貼り付け",
+    "4. package.json にこのファイルの内容を貼り付け",
+    "5. front.html と script.js を新規ファイルとして追加",
+    "6. デプロイすると、GCPが自動的にライブラリをインストールしてくれます"
+  ]
+}
+```
