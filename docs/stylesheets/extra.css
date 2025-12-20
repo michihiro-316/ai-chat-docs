@@ -8,12 +8,12 @@
 
 /* 全体レイアウト */
 .md-grid {
-  max-width: 1400px;
+  max-width: 100%;
 }
 
 .md-main__inner {
   margin-top: 0;
-  max-width: 1200px;
+  max-width: 100%;
 }
 
 /* ヘッダー */
@@ -25,7 +25,7 @@
 .md-header__title {
   color: #1d1d1f;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: -0.01em;
 }
 
@@ -38,8 +38,8 @@
 .md-tabs__link {
   color: #424245;
   font-weight: 500;
-  font-size: 13px;
-  padding: 10px 16px;
+  font-size: 14px;
+  padding: 12px 20px;
   opacity: 1;
   transition: all 0.2s ease;
 }
@@ -57,23 +57,23 @@
 
 /* 左サイドバー */
 .md-sidebar--primary {
-  width: 180px;
+  width: 220px;
 }
 
 .md-nav__title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #86868b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 8px 12px 4px;
+  padding: 10px 14px 5px;
 }
 
 .md-nav__link {
   color: #1d1d1f;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 4px;
   margin: 2px 4px;
   transition: all 0.15s ease;
@@ -93,12 +93,12 @@
 
 /* コンテンツエリア */
 .md-content {
-  max-width: 900px;
-  padding: 0 24px;
+  max-width: 100%;
+  padding: 0 40px;
 }
 
 .md-content__inner {
-  padding: 16px 0;
+  padding: 20px 0;
 }
 
 /* 見出し */
@@ -280,20 +280,20 @@
 
 /* 目次（右サイドバー） */
 .md-sidebar--secondary {
-  width: 200px;
+  width: 240px;
 }
 
 .md-sidebar--secondary .md-nav__title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: #86868b;
   text-transform: uppercase;
 }
 
 .md-sidebar--secondary .md-nav__link {
-  font-size: 12px;
+  font-size: 13px;
   color: #515154;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-left: 2px solid transparent;
   border-radius: 0;
   margin: 0;
