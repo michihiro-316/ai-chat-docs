@@ -14,6 +14,7 @@ markdown_extensions:
   - tables
   - admonition
   - pymdownx.superfences
+  - md_in_html
 nav:
   - ホーム: index.md
   - GCP + Firebase:
