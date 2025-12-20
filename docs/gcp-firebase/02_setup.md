@@ -867,10 +867,10 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 >
 > Node.js版とPython版を用意しています。どちらでも同じ機能が動作します。
 >
-> | 言語 | フォルダ | 特徴 |
+> | 言語 | ソースコード | 特徴 |
 > |------|---------|------|
-> | **Node.js**（推奨） | [code/nodejs/](../code/nodejs/index.md) | JavaScript。ウェブ開発で最も一般的 |
-> | Python | [code/python/](../code/python/index.md) | AIや機械学習でよく使われる言語 |
+> | **Node.js**（推奨） | [コードを見る](../code/nodejs/index.md) | JavaScript。ウェブ開発で最も一般的 |
+> | Python | [コードを見る](../code/python/index.md) | AIや機械学習でよく使われる言語 |
 >
 > 以下の手順は**Node.js版**で説明します。Python版を使う場合は、ランタイムを「Python 3.11」に変更し、`main.py`にbackend.pyの内容を貼り付けてください。
 
