@@ -478,6 +478,11 @@
   color: #ce9178;
 }
 
+/* Docstring (Python) */
+.md-typeset .highlight .sd {
+  color: #6a9955;
+}
+
 /* 関数名 */
 .md-typeset .highlight .n,
 .md-typeset .highlight .nf {
