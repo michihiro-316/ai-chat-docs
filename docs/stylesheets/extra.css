@@ -1,4 +1,4 @@
-/* Apple/Google風 モダンデザイン - 65%表示最適化（超コンパクト版） */
+/* Apple/Google風 モダンデザイン - 100%表示で65%相当のサイズ感 */
 
 :root {
   --md-primary-fg-color: #0066cc;
@@ -15,42 +15,30 @@
   margin-top: 0;
 }
 
-/* ヘッダー - 高さを確保 */
+/* ヘッダー */
 .md-header {
   background: linear-gradient(180deg, #fafafa 0%, #f5f5f7 100%);
   box-shadow: 0 1px 0 rgba(0,0,0,0.1);
-  height: auto;
-  min-height: 40px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.md-header__inner {
-  padding: 0.4rem 0.8rem;
 }
 
 .md-header__title {
   color: #1d1d1f;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   letter-spacing: -0.01em;
 }
 
-/* ナビゲーションタブ - 高さを確保 */
+/* ナビゲーションタブ */
 .md-tabs {
   background: #ffffff;
   border-bottom: 1px solid #d2d2d7;
-  position: sticky;
-  top: 40px;
-  z-index: 99;
 }
 
 .md-tabs__link {
   color: #424245;
   font-weight: 500;
-  font-size: 0.7rem;
-  padding: 0.4rem 0.8rem;
+  font-size: 0.55rem;
+  padding: 0.3rem 0.6rem;
   opacity: 1;
   transition: all 0.2s ease;
 }
@@ -66,28 +54,27 @@
   background: rgba(0, 102, 204, 0.08);
 }
 
-/* 左サイドバー - 上部余白を確保 */
+/* 左サイドバー */
 .md-sidebar--primary {
-  width: 200px;
-  top: 80px;
+  width: 160px;
 }
 
 .md-nav__title {
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   font-weight: 600;
   color: #86868b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.4rem 0.6rem 0.2rem;
+  padding: 0.3rem 0.5rem 0.15rem;
 }
 
 .md-nav__link {
   color: #1d1d1f;
-  font-size: 0.65rem;
+  font-size: 0.5rem;
   font-weight: 400;
-  padding: 0.25rem 0.6rem;
-  border-radius: 4px;
-  margin: 1px 4px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  margin: 1px 3px;
   transition: all 0.15s ease;
 }
 
@@ -106,57 +93,57 @@
 /* コンテンツエリア */
 .md-content {
   max-width: 100%;
-  padding: 0 1rem;
+  padding: 0 0.8rem;
 }
 
 .md-content__inner {
-  padding: 0.8rem 0;
+  padding: 0.6rem 0;
 }
 
-/* 見出し - 超コンパクト */
+/* 見出し - 65%相当 */
 .md-typeset h1 {
   color: #1d1d1f;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1rem;
   letter-spacing: -0.02em;
-  margin-bottom: 0.6rem;
-  padding-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
   border-bottom: 2px solid #0066cc;
 }
 
 .md-typeset h2 {
   color: #1d1d1f;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.8rem;
   letter-spacing: -0.01em;
-  margin-top: 1.2rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.3rem;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.2rem;
   border-bottom: 1px solid #d2d2d7;
 }
 
 .md-typeset h3 {
   color: #424245;
   font-weight: 600;
-  font-size: 0.85rem;
-  margin-top: 1rem;
-  margin-bottom: 0.3rem;
+  font-size: 0.65rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.25rem;
 }
 
 .md-typeset h4 {
   color: #515154;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.58rem;
 }
 
-/* テーブル - 超コンパクト */
+/* テーブル - 65%相当 */
 .md-typeset table:not([class]) {
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   overflow: hidden;
-  font-size: 0.65rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
-  margin: 0.6rem 0;
+  font-size: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+  margin: 0.5rem 0;
   width: 100%;
 }
 
@@ -165,13 +152,13 @@
   color: #1d1d1f;
   font-weight: 600;
   text-transform: none;
-  padding: 5px 8px;
+  padding: 4px 6px;
   border-bottom: 1px solid #d2d2d7;
-  font-size: 0.6rem;
+  font-size: 0.48rem;
 }
 
 .md-typeset table:not([class]) td {
-  padding: 5px 8px;
+  padding: 4px 6px;
   border-bottom: 1px solid #e8e8ed;
   vertical-align: top;
 }
@@ -184,16 +171,16 @@
   background: rgba(0, 102, 204, 0.03);
 }
 
-/* コードブロック - 超コンパクト */
+/* コードブロック - 65%相当 */
 .md-typeset pre {
   background: #1d1d1f;
   border: none;
-  border-radius: 6px;
-  font-size: 0.6rem;
+  border-radius: 5px;
+  font-size: 0.48rem;
   line-height: 1.4;
-  padding: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-  margin: 0.6rem 0;
+  padding: 0.4rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+  margin: 0.5rem 0;
 }
 
 .md-typeset pre code {
@@ -207,9 +194,9 @@
 .md-typeset code {
   background: #f5f5f7;
   border: 1px solid #d2d2d7;
-  border-radius: 3px;
-  padding: 1px 4px;
-  font-size: 0.65em;
+  border-radius: 2px;
+  padding: 1px 3px;
+  font-size: 0.5em;
   color: #bf3d00;
   font-family: 'SF Mono', 'Roboto Mono', monospace;
 }
@@ -227,26 +214,26 @@
   text-decoration: underline;
 }
 
-/* リスト - 超コンパクト */
+/* リスト - 65%相当 */
 .md-typeset ul,
 .md-typeset ol {
-  margin: 0.4rem 0;
+  margin: 0.3rem 0;
 }
 
 .md-typeset ul li,
 .md-typeset ol li {
-  margin-bottom: 0.15em;
+  margin-bottom: 0.1em;
   line-height: 1.4;
 }
 
-/* 引用ブロック - 超コンパクト */
+/* 引用ブロック - 65%相当 */
 .md-typeset blockquote {
   border-left: 2px solid #0066cc;
   background: linear-gradient(135deg, #f5f5f7 0%, #fafafa 100%);
-  padding: 0.5rem 0.8rem;
-  margin: 0.6rem 0;
-  border-radius: 0 6px 6px 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 0.4rem 0.6rem;
+  margin: 0.5rem 0;
+  border-radius: 0 5px 5px 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .md-typeset blockquote p {
@@ -258,28 +245,28 @@
   border: none;
   height: 1px;
   background: linear-gradient(90deg, transparent, #d2d2d7 20%, #d2d2d7 80%, transparent);
-  margin: 1.5rem 0;
+  margin: 1rem 0;
 }
 
 /* アラート/Admonition */
 .md-typeset .admonition {
-  border-radius: 8px;
+  border-radius: 6px;
   border: none;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-  margin: 1rem 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin: 0.8rem 0;
 }
 
 .md-typeset .admonition-title {
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.55rem;
 }
 
 /* 検索 */
 .md-search__input {
   background: #f5f5f7;
   border: 1px solid #d2d2d7;
-  border-radius: 8px;
-  font-size: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.55rem;
 }
 
 .md-search__input:focus {
@@ -287,23 +274,22 @@
   box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
 }
 
-/* 目次（右サイドバー） - 超コンパクト */
+/* 目次（右サイドバー） - 65%相当 */
 .md-sidebar--secondary {
-  width: 180px;
-  top: 80px;
+  width: 140px;
 }
 
 .md-sidebar--secondary .md-nav__title {
-  font-size: 0.55rem;
+  font-size: 0.45rem;
   font-weight: 600;
   color: #86868b;
   text-transform: uppercase;
 }
 
 .md-sidebar--secondary .md-nav__link {
-  font-size: 0.6rem;
+  font-size: 0.48rem;
   color: #515154;
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.4rem;
   border-left: 2px solid transparent;
   border-radius: 0;
   margin: 0;
@@ -335,7 +321,7 @@
 
 /* パンくずリスト */
 .md-typeset .md-breadcrumb {
-  font-size: 0.65rem;
+  font-size: 0.5rem;
   color: #86868b;
 }
 
@@ -343,7 +329,7 @@
 .md-top {
   background: #0066cc;
   border-radius: 50%;
-  box-shadow: 0 3px 10px rgba(0, 102, 204, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
 }
 
 /* ダークモード */
@@ -368,7 +354,7 @@
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
@@ -395,7 +381,7 @@
   font-family: 'SF Mono', 'Roboto Mono', 'Menlo', monospace;
   white-space: pre;
   overflow-x: auto;
-  font-size: 0.65rem;
+  font-size: 0.5rem;
   line-height: 1.4;
 }
 
@@ -409,13 +395,13 @@
   color: #f5f5f7;
 }
 
-/* 本文テキスト - 超コンパクト */
+/* 本文テキスト - 65%相当 */
 .md-typeset {
-  font-size: 0.68rem;
+  font-size: 0.52rem;
   line-height: 1.5;
   color: #1d1d1f;
 }
 
 .md-typeset p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
