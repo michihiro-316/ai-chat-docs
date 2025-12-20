@@ -66,3 +66,14 @@ nav:
   - Bolt + Supabase:
     - 構築設計書: bolt-supabase/01_design.md
     - 構築手順書: bolt-supabase/02_setup.md
+  - ソースコード:
+    - Node.js:
+      - backend.js: code/nodejs/backend.md
+      - front.html: code/nodejs/front.md
+      - script.js: code/nodejs/script.md
+      - package.json: code/nodejs/package.md
+    - Python:
+      - backend.py: code/python/backend.md
+      - front.html: code/python/front.md
+      - script.js: code/python/script.md
+      - requirements.txt: code/python/requirements.md
