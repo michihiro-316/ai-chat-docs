@@ -1,0 +1,21 @@
+site_name: AIチャットアプリ構築ガイド
+site_description: 非エンジニア向けのAIチャットアプリ構築手順書
+theme:
+  name: material
+  language: ja
+  palette:
+    primary: blue
+    accent: light blue
+nav:
+  - ホーム: README.md
+  - GCP + Firebase:
+    - 構築設計書: gcp-firebase/01_構築設計書.md
+    - 構築手順書: gcp-firebase/02_構築手順書.md
+    - 追加デプロイ手順: gcp-firebase/03_追加デプロイ手順_費用見積もり.md
+    - 補足 - CloudRun版: gcp-firebase/99_補足_CloudRun版構築手順.md
+    - 補足 - カスタムドメイン: gcp-firebase/99_補足_カスタムドメイン設定.md
+    - 補足 - コンテナイメージ: gcp-firebase/99_補足_コンテナイメージとは.md
+    - 補足 - サービスアカウント: gcp-firebase/99_補足_サービスアカウントとは.md
+  - Bolt + Supabase:
+    - 構築設計書: bolt-supabase/01_構築設計書.md
+    - 構築手順書: bolt-supabase/02_構築手順書.md
