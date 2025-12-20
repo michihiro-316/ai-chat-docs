@@ -52,7 +52,7 @@
               ┌────────────────────────┼────────────────────────┐
               │                        │                        │
               ▼                        ▼                        ▼
-    companya.anddigital     companyb.anddigital     companyc.anddigital
+    companya.example     companyb.example     companyc.example
          .co.jp                  .co.jp                  .co.jp
               │                        │                        │
               │ DNS (CNAME)            │ DNS (CNAME)            │ DNS (CNAME)
@@ -93,26 +93,26 @@
 ### 2.2 サブドメインルーティング
 
 ```
-ベースドメイン: anddigital.co.jp
+ベースドメイン: example.co.jp
 
 【URL設計】
-{tenant}.anddigital.co.jp/        → テナント専用トップページ
-{tenant}.anddigital.co.jp/dify/*  → テナント専用 Difyアプリ
-{tenant}.anddigital.co.jp/chat/*  → テナント専用 AIチャットボット
-{tenant}.anddigital.co.jp/vertex/* → テナント専用 Vertex AIアプリ
+{tenant}.example.co.jp/        → テナント専用トップページ
+{tenant}.example.co.jp/dify/*  → テナント専用 Difyアプリ
+{tenant}.example.co.jp/chat/*  → テナント専用 AIチャットボット
+{tenant}.example.co.jp/vertex/* → テナント専用 Vertex AIアプリ
 
 【テナント例】
-companya.anddigital.co.jp/        → A社専用トップページ
-companya.anddigital.co.jp/dify/*  → A社 Difyアプリ
-companyb.anddigital.co.jp/        → B社専用トップページ
-companyb.anddigital.co.jp/vertex/* → B社 Vertex AIアプリ
+companya.example.co.jp/        → A社専用トップページ
+companya.example.co.jp/dify/*  → A社 Difyアプリ
+companyb.example.co.jp/        → B社専用トップページ
+companyb.example.co.jp/vertex/* → B社 Vertex AIアプリ
 ```
 
 **DNS設定（テナント追加時）:**
 | サブドメイン | レコードタイプ | 値 |
 |-------------|---------------|-----|
-| companya.anddigital.co.jp | CNAME | Cloud Run サービスURL |
-| companyb.anddigital.co.jp | CNAME | Cloud Run サービスURL |
+| companya.example.co.jp | CNAME | Cloud Run サービスURL |
+| companyb.example.co.jp | CNAME | Cloud Run サービスURL |
 
 ※ Cloud Runの「カスタムドメインをマッピング」機能を使用
 
@@ -121,7 +121,7 @@ companyb.anddigital.co.jp/vertex/* → B社 Vertex AIアプリ
 ```
 【認証フロー】
 
-1. ユーザーが https://companya.anddigital.co.jp/ にアクセス
+1. ユーザーが https://companya.example.co.jp/ にアクセス
    │
    ▼
 2. DNS が Cloud Run functions (tenant-a) に解決
@@ -194,7 +194,7 @@ companyb.anddigital.co.jp/vertex/* → B社 Vertex AIアプリ
 | 最大インスタンス | 10（制限可能） |
 | タイムアウト | 300秒 |
 | 認証 | 未認証許可（Firebase Auth で制御） |
-| カスタムドメイン | `{tenant}.anddigital.co.jp` をマッピング |
+| カスタムドメイン | `{tenant}.example.co.jp` をマッピング |
 
 **デプロイ方法:**
 - GCPコンソールの Cloud Run →「関数を作成」からコードを直接入力
@@ -221,7 +221,7 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 | 項目 | 設定値 |
 |------|--------|
 | 役割 | テナントごとのユーザー一括管理 |
-| グループ例 | `ai-users-companya@anddigital.co.jp` |
+| グループ例 | `ai-users-companya@example.co.jp` |
 | 管理方法 | Google Workspace 管理コンソール or groups.google.com |
 | 用途 | Firebase Auth の許可ユーザー管理に使用 |
 
@@ -281,8 +281,8 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 │              サブドメイン分離                                  │
 │                                                             │
 │  - テナントごとに独立したサブドメイン + Cloud Run functions     │
-│  - companya.anddigital.co.jp → tenant-a 関数のみアクセス      │
-│  - companyb.anddigital.co.jp → tenant-b 関数のみアクセス      │
+│  - companya.example.co.jp → tenant-a 関数のみアクセス      │
+│  - companyb.example.co.jp → tenant-b 関数のみアクセス      │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -336,7 +336,7 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
         │                     │                     │
         ▼                     ▼                     ▼
    companya.           companyb.            companyc.
-   anddigital.co.jp    anddigital.co.jp     anddigital.co.jp
+   example.co.jp    example.co.jp     example.co.jp
         │                     │                     │
         │ DNS (CNAME)         │ DNS (CNAME)         │ DNS (CNAME)
         │ + HTTPS (443)       │ + HTTPS (443)       │ + HTTPS (443)
@@ -499,7 +499,7 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 **手順4: カスタムドメインをマッピング**
 1. 作成した関数を開く
 2.「カスタムドメインをマッピング」をクリック
-3. ドメイン: `{tenant}.anddigital.co.jp` を入力
+3. ドメイン: `{tenant}.example.co.jp` を入力
 4. 表示されるCNAMEレコード情報をメモ
 
 **手順5: DNS設定**
@@ -513,8 +513,8 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 
 | テナントID | 会社名 | サブドメイン | 関数名 | 許可ドメイン | 利用AI | 契約開始日 | ステータス |
 |-----------|-------|-------------|--------|------------|--------|-----------|-----------|
-| tenant-a | A株式会社 | companya.anddigital.co.jp | ai-platform-tenant-a | @a-company.co.jp | Dify | 2025/01/01 | 稼働中 |
-| tenant-b | B株式会社 | companyb.anddigital.co.jp | ai-platform-tenant-b | @b-company.co.jp | Vertex AI | 2025/02/01 | 稼働中 |
+| tenant-a | A株式会社 | companya.example.co.jp | ai-platform-tenant-a | @a-company.co.jp | Dify | 2025/01/01 | 稼働中 |
+| tenant-b | B株式会社 | companyb.example.co.jp | ai-platform-tenant-b | @b-company.co.jp | Vertex AI | 2025/02/01 | 稼働中 |
 
 ---
 

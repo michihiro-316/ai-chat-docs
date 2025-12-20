@@ -48,7 +48,7 @@
 ### Step 4: ドメイン設定（5分＋待ち時間）
 
 1. Cloud Run → サービス →「ドメイン マッピングを管理」
-2. ドメイン: `companyb.anddigital.co.jp`
+2. ドメイン: `companyb.example.co.jp`
 3. DNS管理画面でCNAMEレコード追加:
    - ホスト: `companyb`
    - 値: `ghs.googlehosted.com`
@@ -60,7 +60,7 @@
 
 | チェック | 確認項目 |
 |:------:|---------|
-| ☐ | https://companyb.anddigital.co.jp にアクセスできる |
+| ☐ | https://companyb.example.co.jp にアクセスできる |
 | ☐ | SSL証明書が有効（鍵マーク表示） |
 | ☐ | Googleログインが動作する |
 
