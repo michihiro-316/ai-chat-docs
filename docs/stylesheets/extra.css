@@ -1,0 +1,250 @@
+/* Google/Apple風 モダンデザイン */
+
+:root {
+  --md-primary-fg-color: #1a73e8;
+  --md-accent-fg-color: #1a73e8;
+}
+
+/* ヘッダー */
+.md-header {
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15);
+}
+
+.md-header[data-md-state=shadow] {
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15);
+}
+
+.md-header__title {
+  color: #202124;
+  font-weight: 500;
+}
+
+/* ナビゲーションタブ */
+.md-tabs {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dadce0;
+}
+
+.md-tabs__link {
+  color: #5f6368;
+  font-weight: 500;
+  opacity: 1;
+}
+
+.md-tabs__link:hover {
+  color: #1a73e8;
+}
+
+.md-tabs__link--active {
+  color: #1a73e8;
+  border-bottom: 3px solid #1a73e8;
+}
+
+/* サイドバー */
+.md-nav__link {
+  color: #3c4043;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0 20px 20px 0;
+  margin-right: 12px;
+}
+
+.md-nav__link:hover {
+  background-color: #f1f3f4;
+  color: #1a73e8;
+}
+
+.md-nav__link--active {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+/* コンテンツエリア */
+.md-content {
+  max-width: 900px;
+}
+
+/* 見出し */
+.md-typeset h1 {
+  color: #202124;
+  font-weight: 400;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: none;
+}
+
+.md-typeset h2 {
+  color: #202124;
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dadce0;
+}
+
+.md-typeset h3 {
+  color: #3c4043;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+/* テーブル */
+.md-typeset table:not([class]) {
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.875rem;
+  box-shadow: none;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: #f8f9fa;
+  color: #5f6368;
+  font-weight: 500;
+  text-transform: none;
+  border-bottom: 1px solid #dadce0;
+  padding: 12px 16px;
+}
+
+.md-typeset table:not([class]) td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.md-typeset table:not([class]) tr:last-child td {
+  border-bottom: none;
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background-color: #f8f9fa;
+}
+
+/* コードブロック */
+.md-typeset pre {
+  background-color: #f8f9fa;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.md-typeset code {
+  background-color: #f1f3f4;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.875em;
+  color: #d93025;
+}
+
+.md-typeset pre code {
+  color: inherit;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* リンク */
+.md-typeset a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.md-typeset a:hover {
+  text-decoration: underline;
+}
+
+/* リスト */
+.md-typeset ul li,
+.md-typeset ol li {
+  margin-bottom: 0.5em;
+}
+
+/* 引用ブロック */
+.md-typeset blockquote {
+  border-left: 4px solid #1a73e8;
+  background-color: #f8f9fa;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+}
+
+/* アラート/Admonition */
+.md-typeset .admonition {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+}
+
+.md-typeset .admonition-title {
+  font-weight: 500;
+}
+
+/* 検索 */
+.md-search__input {
+  background-color: #f1f3f4;
+  border-radius: 24px;
+}
+
+.md-search__input::placeholder {
+  color: #5f6368;
+}
+
+/* 目次（右サイドバー） */
+.md-sidebar--secondary .md-nav__link {
+  font-size: 0.75rem;
+  color: #5f6368;
+}
+
+.md-sidebar--secondary .md-nav__link--active {
+  color: #1a73e8;
+  font-weight: 500;
+  background-color: transparent;
+}
+
+/* フッター */
+.md-footer {
+  background-color: #f8f9fa;
+}
+
+/* ダークモード対応 */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #202124;
+  --md-default-fg-color: #e8eaed;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+  background-color: #303134;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.3);
+}
+
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #303134;
+  border-bottom-color: #5f6368;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+  border-color: #5f6368;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: #303134;
+  color: #e8eaed;
+}
+
+[data-md-color-scheme="slate"] .md-typeset pre {
+  background-color: #303134;
+  border-color: #5f6368;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background-color: #3c4043;
+  color: #f28b82;
+}
+
+/* アーキテクチャ図のフォント固定 */
+.md-typeset pre > code {
+  font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
+  white-space: pre;
+  overflow-x: auto;
+}
