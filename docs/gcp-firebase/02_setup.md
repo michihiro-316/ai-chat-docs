@@ -201,7 +201,7 @@ Firebase設定情報を取得するため、ウェブアプリを登録します
 > 「アプリを追加してください」というメッセージがあります。
 > そこから追加することもできます。
 
-3. プラットフォームの選択画面で「**ウェブ**」（ウェブアイコン）をクリック
+3. プラットフォームの選択画面で「**ウェブ**」（`</>`アイコン）をクリック
 
 4. アプリ情報を入力:
    | 項目 | 入力値 |
@@ -334,6 +334,40 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 > ```
 > ※ ダミー値ではAI機能は動作しませんが、環境構築の手順確認には使用できます。
 
+### 4-2. サービスアカウントへの権限付与
+
+シークレットを作成したら、Cloud Runがシークレットにアクセスできるように権限を付与します。
+
+> **⚠️ この手順を忘れると？**
+>
+> Cloud Runデプロイ時に以下のエラーが発生します：
+>
+> ```
+> Permission denied on secret: projects/xxx/secrets/openai-api-key/versions/latest
+> for Revision service account xxx@xxx.iam.gserviceaccount.com.
+> The service account used must be granted the 'Secret Manager Secret Accessor' role
+> ```
+
+**権限付与の手順**
+
+1. GCPコンソールで「**IAMと管理**」→「**IAM**」を開く
+2. 使用するサービスアカウントを探す
+   - 推奨: `firebase-adminsdk-xxxxx@[プロジェクトID].iam.gserviceaccount.com`
+   - ※ `xxxxx` と `[プロジェクトID]` は各プロジェクトで異なります
+3. 右の**鉛筆アイコン（編集）**をクリック
+4. 「**別のロールを追加**」をクリック
+5. 「`Secret Manager Secret Accessor`」または「`Secret Manager のシークレット アクセサー`」を検索して選択
+6. 「**保存**」をクリック
+
+> **どのサービスアカウントに権限を付与するか？**
+>
+> | サービスアカウント | 説明 |
+> |------------------|------|
+> | `firebase-adminsdk-xxxxx@...`（推奨） | Firebase関連の権限も持っている。Step 5でCloud Runに設定する |
+> | `xxxxx-compute@developer.gserviceaccount.com` | デフォルトのCompute Engine サービスアカウント |
+>
+> **推奨**: `firebase-adminsdk` を使用し、Step 5のセキュリティタブでこのサービスアカウントを選択します。
+
 ---
 
 ## Step 5: Cloud Run functions作成（30分）
@@ -352,7 +386,7 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 > **補足: コンテナイメージについて**
 > Cloud Run functions版では、コードを貼り付けるだけでGCPが自動的に実行環境を用意してくれます。
 > そのため、Dockerやコンテナイメージの知識は不要です。
-> 「コンテナイメージとは何か？」を知りたい方は [99_補足_コンテナイメージとは](99_container.md) を参照してください。
+> 「コンテナイメージとは何か？」を知りたい方は [99_container.md](99_container.md) を参照してください。
 
 ### 5-1. 関数の作成を開始
 
@@ -791,9 +825,20 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 > Cloud Run functionsでは、デフォルトのサービスアカウントが自動的に使用されます。
 > サービスアカウントとは「アプリ専用のGoogleアカウント」のようなもので、
 > アプリがSecret Managerにアクセスするための権限を持っています。
-> 詳しくは [99_補足_サービスアカウントとは](99_service_account.md) を参照してください。
+> 詳しくは [99_service_account.md](99_service_account.md) を参照してください。
 
 4. 「コンテナを保存」をクリック
+
+##### セキュリティ タブ
+
+「セキュリティ」タブをクリックして、サービスアカウントを設定します。
+
+| 項目 | 設定値 | 意味 |
+|------|--------|------|
+| サービス アカウント | `firebase-adminsdk-xxxxx@[プロジェクトID].iam.gserviceaccount.com` | Step 4-2で権限を付与したサービスアカウント |
+
+> **注意**: Step 4-2 で権限付与したサービスアカウントを選択してください。
+> `Default compute service account` のままだとシークレットへのアクセス権限エラーが発生します。
 
 ### 5-4. ソースコードの設定
 
@@ -818,20 +863,49 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 
 #### ソースコード
 
-> **ファイル構成**
+> **言語の選択**
+>
+> Node.js版とPython版を用意しています。どちらでも同じ機能が動作します。
+>
+> | 言語 | フォルダ | 特徴 |
+> |------|---------|------|
+> | **Node.js**（推奨） | [code/nodejs/](../code/nodejs/) | JavaScript。ウェブ開発で最も一般的 |
+> | Python | [code/python/](../code/python/) | AIや機械学習でよく使われる言語 |
+>
+> 以下の手順は**Node.js版**で説明します。Python版を使う場合は、ランタイムを「Python 3.11」に変更し、`main.py`にbackend.pyの内容を貼り付けてください。
+
+> **ファイル構成（Node.js版）**
 >
 > | ファイル | 役割 | GCPでの操作 |
 > |---------|------|------------|
-> | [backend.js](code/backend.js) | サーバー側の処理（メイン） | index.js に貼り付け |
-> | [front.html](code/front.html) | 画面のデザインと動作（参考用） | 貼り付け不要（backend.js に埋め込み済み） |
-> | [package.json](code/package.json) | 使用するライブラリ一覧 | package.json に貼り付け |
+> | [front.html](../code/nodejs/front.html) | 画面のデザイン（HTML/CSS） | 新規ファイルとして追加 |
+> | [script.js](../code/nodejs/script.js) | フロントエンドの処理（JavaScript） | 新規ファイルとして追加 |
+> | [backend.js](../code/nodejs/backend.js) | サーバー側の処理 | index.js に貼り付け |
+> | [package.json](../code/nodejs/package.json) | 使用するライブラリ一覧 | package.json に貼り付け |
+
+##### GCPへの貼り付け手順
+
+**1. index.js を設定**
 
 1. 左側のファイル一覧で「index.js」をクリック
 2. 既存のコードをすべて削除
-3. [code/backend.js](code/backend.js) の内容をコピーして貼り付け
+3. [backend.js](../code/nodejs/backend.js) の内容をコピーして貼り付け
+
+**2. front.html を追加**
+
+1. 左側のファイル一覧の上にある「**＋**」ボタンをクリック
+2. ファイル名に「`front.html`」と入力
+3. [front.html](../code/nodejs/front.html) の内容をコピーして貼り付け
+
+**3. script.js を追加**
+
+1. 左側のファイル一覧の上にある「**＋**」ボタンをクリック
+2. ファイル名に「`script.js`」と入力
+3. [script.js](../code/nodejs/script.js) の内容をコピーして貼り付け
 
 > **重要: Firebase設定の書き換え**
-> コード内の `firebaseConfig` を、Step 2-3でメモした自分のプロジェクトの設定に書き換えてください。
+>
+> script.js 内の `firebaseConfig` を、Step 2-3でメモした自分のプロジェクトの設定に書き換えてください。
 >
 > ```javascript
 > const firebaseConfig = {
@@ -842,9 +916,11 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 > };
 > ```
 
-4. 左側のファイル一覧で「package.json」をクリック
-5. 既存の内容をすべて削除
-6. [code/package.json](code/package.json) の内容をコピーして貼り付け
+**4. package.json を設定**
+
+1. 左側のファイル一覧で「package.json」をクリック
+2. 既存の内容をすべて削除
+3. [package.json](../code/nodejs/package.json) の内容をコピーして貼り付け
 
 ### 5-5. デプロイ
 
@@ -865,7 +941,7 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 
 > **独自ドメインを使いたい場合**
 > 本番環境で `app.yourcompany.co.jp` のような独自ドメインを使いたい場合は、
-> [99_補足_カスタムドメイン設定](99_custom_domain.md) を参照してください。
+> [99_custom_domain.md](99_custom_domain.md) を参照してください。
 
 ---
 
@@ -941,8 +1017,60 @@ Cloud Run functionsとSecret Managerを使用するために、GCPで必要なAP
 
 ---
 
+## 本番運用時のセキュリティ設定
+
+本番環境で運用する際は、以下の設定を必ず行ってください。
+
+### 必須設定
+
+| 項目 | 現状（開発用） | 本番設定 |
+|------|---------------|----------|
+| CORS設定 | `'*'`（全許可） | 自分のドメインのみ許可に変更 |
+| ALLOWED設定 | 未設定（全員許可） | `ALLOWED_EMAILS` または `ALLOWED_DOMAINS` を必ず設定 |
+| Firebase設定 | サンプル値 | 自分のプロジェクトの値に書き換え |
+
+#### CORS設定の変更方法
+
+`backend.js` の以下の部分を変更します：
+
+```javascript
+// 変更前（開発用）
+const ALLOWED_ORIGINS = ['*'];
+
+// 変更後（本番用）- 自分のドメインのみ許可
+const ALLOWED_ORIGINS = [
+    'https://your-app.web.app',
+    'https://your-domain.com'
+];
+```
+
+#### アクセス制限の設定
+
+GCPの環境変数で以下を設定します：
+
+| 環境変数 | 設定例 | 説明 |
+|---------|--------|------|
+| `ALLOWED_EMAILS` | `admin@example.com,user1@example.com` | 許可するメールアドレス（カンマ区切り） |
+| `ALLOWED_DOMAINS` | `@yourcompany.co.jp` | 許可するドメイン（@を含む、カンマ区切り） |
+
+> **注意**: 両方とも未設定の場合、開発用として全員がアクセスできる状態になります。
+> 本番では必ずどちらかを設定してください。
+
+### 推奨設定（より安全に運用したい場合）
+
+| 項目 | 説明 | 対応方法 |
+|------|------|----------|
+| JWT署名検証 | トークンの改ざん防止を強化 | `firebase-admin` パッケージで検証を追加 |
+| レート制限 | 大量リクエスト攻撃の防止 | Cloud Armor を設定 |
+| ログ監視 | 不正アクセスの検知 | Cloud Logging でアラート設定 |
+
+> **補足**: 現在の実装でも基本的なセキュリティは確保されています。
+> 上記は大規模運用や機密性の高いデータを扱う場合の追加対策です。
+
+---
+
 ## 参考: 別のアーキテクチャパターン
 
 より複雑なアプリケーションや長時間処理が必要な場合は、Cloud Runを使用する方法もあります。
 
-詳細は [99_補足_CloudRun版構築手順](99_cloudrun.md) を参照してください。
+詳細は [99_cloudrun.md](99_cloudrun.md) を参照してください。
