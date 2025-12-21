@@ -79,3 +79,16 @@ nav:
       - front.html: code/python/front.md
       - script.js: code/python/script.md
       - requirements.txt: code/python/requirements.md
+  - Claude Code:
+    - 概要: claude-code/index.md
+    - CLAUDE.md: claude-code/claude_md.md
+    - settings.json: claude-code/settings.md
+    - ルール:
+      - 00_project_context: claude-code/00_project_context.md
+      - 01_comment_policy: claude-code/01_comment_policy.md
+      - 02_system_architecture: claude-code/02_system_architecture.md
+      - 03_directory_structure: claude-code/03_directory_structure.md
+      - 04_boundary_policy: claude-code/04_boundary_policy.md
+      - 05_security_notes: claude-code/05_security_notes.md
+      - 06_cloudrun_ops: claude-code/06_cloudrun_ops.md
+      - 99_for_non_engineers: claude-code/99_for_non_engineers.md
