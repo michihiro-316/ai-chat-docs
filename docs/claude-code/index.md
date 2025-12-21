@@ -2,6 +2,12 @@
 
 このセクションでは、Claude Code（Anthropic公式CLI）のプロジェクト設定について説明します。
 
+<div class="download-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+<p style="color: white; margin: 0 0 0.5rem 0; font-weight: bold;">テンプレートをダウンロード</p>
+<p style="color: rgba(255,255,255,0.9); margin: 0 0 1rem 0; font-size: 0.9rem;">プロジェクトにそのまま使える .claude フォルダ一式</p>
+<a href="claude-template.zip" download style="display: inline-block; background: white; color: #667eea; padding: 0.5rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: bold;">📦 claude-template.zip</a>
+</div>
+
 ## 概要
 
 Claude Codeは `.claude` フォルダを使って、プロジェクト固有のルールや権限を設定できます。
