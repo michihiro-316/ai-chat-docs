@@ -1,39 +1,81 @@
-// TOC折りたたみ機能
-document.addEventListener('DOMContentLoaded', function() {
-  // ページ読み込み完了後に少し待ってから実行
-  setTimeout(initCollapsibleToc, 100);
-});
+// TOC折りたたみ機能 v3
+(function() {
+  'use strict';
 
-function initCollapsibleToc() {
-  // 右サイドバーのTOCを取得
-  const toc = document.querySelector('.md-sidebar--secondary .md-nav--secondary');
-  if (!toc) return;
+  function init() {
+    var sidebar = document.querySelector('.md-sidebar--secondary');
+    if (!sidebar) return;
 
-  // h2レベル（トップレベル）のリストアイテムを取得
-  const topLevelItems = toc.querySelectorAll('.md-nav__list > .md-nav__item');
+    var navList = sidebar.querySelector('.md-nav__list');
+    if (!navList) return;
 
-  topLevelItems.forEach(function(item) {
-    const nestedList = item.querySelector('.md-nav__list');
-    const link = item.querySelector(':scope > .md-nav__link');
+    // 既に初期化済みかチェック
+    if (navList.getAttribute('data-toc-init') === 'true') return;
+    navList.setAttribute('data-toc-init', 'true');
 
-    if (nestedList && link) {
-      // 折りたたみ可能なアイテムにクラスを追加
-      item.classList.add('toc-collapsible');
-      item.classList.add('toc-collapsed'); // 初期状態は折りたたみ
+    // 直接の子要素を取得
+    var items = navList.querySelectorAll(':scope > .md-nav__item');
 
-      // トグルボタンを作成
-      const toggle = document.createElement('span');
-      toggle.className = 'toc-toggle';
-      toggle.innerHTML = '▶';
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        item.classList.toggle('toc-collapsed');
-        toggle.innerHTML = item.classList.contains('toc-collapsed') ? '▶' : '▼';
-      });
+    items.forEach(function(item) {
+      var nestedList = item.querySelector(':scope > .md-nav__list');
+      var link = item.querySelector(':scope > .md-nav__link');
 
-      // リンクの前にトグルボタンを挿入
-      link.insertBefore(toggle, link.firstChild);
-    }
-  });
-}
+      if (nestedList && link) {
+        // 折りたたみクラス追加
+        item.classList.add('toc-collapsible');
+        item.classList.add('toc-collapsed');
+
+        // トグルボタン作成
+        var toggle = document.createElement('span');
+        toggle.className = 'toc-toggle';
+        toggle.textContent = '▶';
+
+        // クリックイベント
+        toggle.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          var isCollapsed = item.classList.contains('toc-collapsed');
+
+          if (isCollapsed) {
+            item.classList.remove('toc-collapsed');
+            toggle.textContent = '▼';
+          } else {
+            item.classList.add('toc-collapsed');
+            toggle.textContent = '▶';
+          }
+
+          return false;
+        };
+
+        // リンクの前に挿入
+        link.insertBefore(toggle, link.firstChild);
+      }
+    });
+  }
+
+  // 複数タイミングで初期化を試行
+  function tryInit() {
+    setTimeout(init, 100);
+    setTimeout(init, 500);
+    setTimeout(init, 1000);
+  }
+
+  // DOM準備完了時
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryInit);
+  } else {
+    tryInit();
+  }
+
+  // ページ完全読み込み時
+  window.addEventListener('load', tryInit);
+
+  // MkDocs Material instant loading対応
+  var defined = typeof window.document$ !== 'undefined';
+  if (defined && window.document$) {
+    window.document$.subscribe(function() {
+      tryInit();
+    });
+  }
+})();

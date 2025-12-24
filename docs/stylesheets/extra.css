@@ -507,35 +507,34 @@
   display: block !important;
 }
 
-/* 折りたたみ可能なアイテム */
-.toc-collapsible > .md-nav__list {
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
+/* 折りたたみ状態のネストリストを非表示 */
+.md-sidebar--secondary .md-nav__item.toc-collapsed > .md-nav__list {
+  display: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
 }
 
-/* 折りたたみ状態 */
-.toc-collapsed > .md-nav__list {
-  max-height: 0 !important;
-}
-
-/* 展開状態 */
-.toc-collapsible:not(.toc-collapsed) > .md-nav__list {
-  max-height: 1000px;
+/* 展開状態のネストリストを表示 */
+.md-sidebar--secondary .md-nav__item.toc-collapsible:not(.toc-collapsed) > .md-nav__list {
+  display: block !important;
+  height: auto !important;
+  visibility: visible !important;
 }
 
 /* トグルボタン */
-.toc-toggle {
-  display: inline-block;
-  width: 16px;
-  font-size: 10px;
-  color: #86868b;
-  cursor: pointer;
-  margin-right: 4px;
-  transition: transform 0.2s ease;
+.md-sidebar--secondary .toc-toggle {
+  display: inline-block !important;
+  width: 14px !important;
+  font-size: 10px !important;
+  color: #666 !important;
+  cursor: pointer !important;
+  margin-right: 6px !important;
+  user-select: none;
 }
 
-.toc-toggle:hover {
-  color: #0066cc;
+.md-sidebar--secondary .toc-toggle:hover {
+  color: #0066cc !important;
 }
 
 /* ========================================
