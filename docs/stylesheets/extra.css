@@ -597,59 +597,53 @@ pre code,
 }
 
 /* ========================================
-   TOC折りたたみ機能（MkDocs Material対応）
+   TOC折りたたみ機能（MkDocs Material対応 v2）
    ======================================== */
-/* 右サイドバーを表示に戻す */
+/* 右サイドバーを表示 */
 .md-sidebar--secondary {
   display: block !important;
 }
 
-/* 折りたたみ状態のネストナビを非表示 */
-/* MkDocs MaterialはネストをNav要素(.md-nav)で囲む */
-.md-sidebar--secondary .md-nav__item.toc-collapsed > nav.md-nav,
-.md-sidebar--secondary .md-nav__item.toc-collapsed > .md-nav,
-.md-sidebar--secondary .md-nav__item.toc-collapsed > .toc-nested-nav {
-  display: none !important;
-  height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-/* 展開状態のネストナビを表示 */
-.md-sidebar--secondary .md-nav__item.toc-collapsible:not(.toc-collapsed) > nav.md-nav,
-.md-sidebar--secondary .md-nav__item.toc-collapsible:not(.toc-collapsed) > .md-nav,
-.md-sidebar--secondary .md-nav__item.toc-collapsible:not(.toc-collapsed) > .toc-nested-nav {
-  display: block !important;
-  height: auto !important;
-  max-height: none !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* トグルボタン */
+/* トグルボタン（リンクの外に配置） */
 .md-sidebar--secondary .toc-toggle {
-  display: inline-block !important;
-  width: 16px !important;
-  font-size: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 9px !important;
   color: #666 !important;
   cursor: pointer !important;
-  margin-right: 4px !important;
   user-select: none !important;
-  text-align: center !important;
+  flex-shrink: 0 !important;
+  margin-right: 2px !important;
+  border-radius: 3px !important;
+  transition: background 0.15s ease !important;
 }
 
 .md-sidebar--secondary .toc-toggle:hover {
   color: #0066cc !important;
+  background: rgba(0, 102, 204, 0.1) !important;
 }
 
-/* TOCリンクのスタイル調整 */
-.md-sidebar--secondary .md-nav__item.toc-collapsible > .md-nav__link {
+/* 折りたたみ可能なアイテムのレイアウト */
+.md-sidebar--secondary .md-nav__item.toc-collapsible {
   display: flex !important;
-  align-items: center !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+}
+
+/* リンクのスタイル（クリック可能に） */
+.md-sidebar--secondary .md-nav__item.toc-collapsible > .md-nav__link {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* ネストナビは全幅で表示 */
+.md-sidebar--secondary .md-nav__item.toc-collapsible > nav.md-nav,
+.md-sidebar--secondary .md-nav__item.toc-collapsible > .toc-nested-nav {
+  width: 100% !important;
+  flex-basis: 100% !important;
 }
 
 /* ========================================

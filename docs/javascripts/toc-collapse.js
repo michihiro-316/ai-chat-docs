@@ -1,4 +1,4 @@
-// TOC折りたたみ機能 v4 - MkDocs Material対応
+// TOC折りたたみ機能 v5 - リンク遷移を妨げない版
 (function() {
   'use strict';
 
@@ -32,13 +32,18 @@
         // ネストNavにもクラス追加（CSS用）
         nestedNav.classList.add('toc-nested-nav');
 
-        // トグルボタン作成
+        // 直接スタイルを設定（CSS上書き対策）
+        nestedNav.style.cssText = 'display: none !important; visibility: hidden !important;';
+
+        // トグルボタン作成（リンクの外に配置）
         var toggle = document.createElement('span');
         toggle.className = 'toc-toggle';
         toggle.textContent = '▶';
+        toggle.setAttribute('role', 'button');
+        toggle.setAttribute('aria-label', '展開/折りたたみ');
 
-        // クリックイベント
-        toggle.onclick = function(e) {
+        // クリックイベント（トグルボタンのみ）
+        toggle.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
 
@@ -47,16 +52,16 @@
           if (isCollapsed) {
             item.classList.remove('toc-collapsed');
             toggle.textContent = '▼';
+            nestedNav.style.cssText = 'display: block !important; visibility: visible !important;';
           } else {
             item.classList.add('toc-collapsed');
             toggle.textContent = '▶';
+            nestedNav.style.cssText = 'display: none !important; visibility: hidden !important;';
           }
+        });
 
-          return false;
-        };
-
-        // リンクの前に挿入
-        link.insertBefore(toggle, link.firstChild);
+        // トグルをリンクの前に挿入（リンクの外）
+        item.insertBefore(toggle, link);
       }
     });
   }
