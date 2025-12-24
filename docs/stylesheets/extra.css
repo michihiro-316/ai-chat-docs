@@ -10,6 +10,21 @@
   --md-code-hl-color: rgba(255, 255, 0, 0.5);
 }
 
+/* ヘッダー高さをMkDocs Materialに通知（toc.follow用） */
+:root {
+  scroll-padding-top: 80px;
+  --md-header-height: 80px;
+}
+
+html {
+  scroll-padding-top: 80px;
+}
+
+/* アンカー要素のオフセット調整 */
+[id] {
+  scroll-margin-top: 80px;
+}
+
 /* ========================================
    全体レイアウト - 2カラム設計（目次非表示）
    ======================================== */
