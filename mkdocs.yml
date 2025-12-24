@@ -59,6 +59,12 @@ nav:
     - 構築設計書: gcp-firebase/01_design.md
     - 構築手順書: gcp-firebase/02_setup.md
     - 追加デプロイ手順: gcp-firebase/03_deploy_cost.md
+    - コード解説:
+      - 概要: gcp-firebase/code-explained/index.md
+      - backend.py: gcp-firebase/code-explained/01_backend.md
+      - front.html: gcp-firebase/code-explained/02_front.md
+      - script.js: gcp-firebase/code-explained/03_script.md
+      - エントリポイント: gcp-firebase/code-explained/04_entrypoint.md
     - 補足 - CloudRun版: gcp-firebase/99_cloudrun.md
     - 補足 - カスタムドメイン: gcp-firebase/99_custom_domain.md
     - 補足 - コンテナイメージ: gcp-firebase/99_container.md
