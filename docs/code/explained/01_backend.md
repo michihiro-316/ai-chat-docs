@@ -2,20 +2,297 @@
 
 このファイルはサーバー側の処理を担当します。「厨房のシェフ」のような役割です。
 
+**このドキュメントでは、Pythonの基礎構文から丁寧に解説します。**
+
 ---
 
 ## 目次
 
-1. [ライブラリ読み込み](#1-ライブラリ読み込み)
-2. [設定部分](#2-設定部分)
-3. [ヘルパー関数](#3-ヘルパー関数)
-4. [アクセス制御](#4-アクセス制御)
-5. [メインハンドラ（app関数）](#5-メインハンドラapp関数)
-6. [各APIエンドポイント](#6-各apiエンドポイント)
+1. [Python基礎：これだけ覚えよう](#1-python基礎これだけ覚えよう)
+2. [ライブラリ読み込み](#2-ライブラリ読み込み)
+3. [設定部分](#3-設定部分)
+4. [ヘルパー関数](#4-ヘルパー関数)
+5. [アクセス制御](#5-アクセス制御)
+6. [メインハンドラ](#6-メインハンドラ)
 
 ---
 
-## 1. ライブラリ読み込み
+## 1. Python基礎：これだけ覚えよう
+
+コードを読む前に、必要なPython構文を解説します。
+
+### 1-1. 辞書（dictionary）とは？
+
+**辞書 = 「名前」と「値」のペアを保存するもの**
+
+```python
+# 辞書を作る
+person = {
+    'name': '田中',
+    'age': 25,
+    'email': 'tanaka@example.com'
+}
+
+# 値を取り出す
+print(person['name'])   # → 田中
+print(person['age'])    # → 25
+
+# 値を追加・変更する
+person['phone'] = '090-1234-5678'  # 追加
+person['age'] = 26                  # 変更
+```
+
+**イメージ**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  辞書 = 引き出しに名前ラベルがついた棚                        │
+│                                                             │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐                       │
+│  │  name   │ │  age    │ │  email  │  ← ラベル（キー）     │
+│  ├─────────┤ ├─────────┤ ├─────────┤                       │
+│  │  田中   │ │   25    │ │tanaka@..│  ← 中身（値）         │
+│  └─────────┘ └─────────┘ └─────────┘                       │
+│                                                             │
+│  person['name'] = 「nameラベルの引き出しを開けて中身を見る」  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**このコードでの使われ方**
+```python
+# headers という辞書に値を追加していく
+headers = {}  # 空の辞書を作る
+headers['Content-Type'] = 'text/html'  # 追加
+headers['X-Frame-Options'] = 'DENY'    # 追加
+
+# 結果
+# headers = {
+#     'Content-Type': 'text/html',
+#     'X-Frame-Options': 'DENY'
+# }
+```
+
+---
+
+### 1-2. `in` とは？
+
+**`in` = 「〜の中に含まれる？」を確認する**
+
+```python
+# リスト（配列）での使用
+fruits = ['りんご', 'みかん', 'ぶどう']
+
+'りんご' in fruits    # → True（含まれる）
+'バナナ' in fruits    # → False（含まれない）
+
+# 文字列での使用
+email = 'tanaka@example.com'
+
+'@' in email          # → True（@が含まれる）
+'@example.com' in email  # → True
+'@test.com' in email     # → False
+```
+
+**if文での使い方**
+```python
+allowed_list = ['tanaka@example.com', 'yamada@test.com']
+email = 'tanaka@example.com'
+
+if email in allowed_list:
+    print('許可されています')
+else:
+    print('許可されていません')
+
+# → 許可されています
+```
+
+---
+
+### 1-3. `or` とは？
+
+**`or` = 「または」（どちらかがTrueならTrue）**
+
+```python
+# 条件での使用
+age = 20
+is_student = True
+
+if age >= 18 or is_student:
+    print('OK')  # どちらかがTrueなのでOK
+
+# → OK
+```
+
+**値の選択での使用（これが重要！）**
+```python
+# 「値 or デフォルト値」という書き方
+name = None
+result = name or '名無し'
+print(result)  # → '名無し'
+
+name = '田中'
+result = name or '名無し'
+print(result)  # → '田中'
+```
+
+**仕組み**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  A or B の動き                                              │
+│                                                             │
+│  1. まず A を確認                                           │
+│  2. A が「ある」（True相当）なら → A を返す                 │
+│  3. A が「ない」（False相当）なら → B を返す                │
+│                                                             │
+│  例:                                                        │
+│  origin = None                                              │
+│  origin or '*'  → originがNoneなので '*' を返す             │
+│                                                             │
+│  origin = 'https://example.com'                             │
+│  origin or '*'  → originがあるので 'https://example.com'    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 1-4. `with open()` とは？
+
+**`with open()` = ファイルを安全に開いて読む方法**
+
+```python
+with open('front.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+```
+
+**各部分の意味**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  with open('front.html', 'r', encoding='utf-8') as f:       │
+│       │         │         │           │              │      │
+│       │         │         │           │              └─ 変数名（何でもOK） │
+│       │         │         │           └─ 文字コード（日本語対応）       │
+│       │         │         └─ 'r' = read（読み取り）                    │
+│       │         └─ ファイル名                                         │
+│       └─ ファイルを開く関数                                           │
+│                                                             │
+│      content = f.read()                                     │
+│      │           └─ ファイルの中身を全部読む                 │
+│      └─ 読んだ内容を変数に保存                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**なぜ `with` を使う？**
+```python
+# 悪い例（ファイルを閉じ忘れる可能性）
+f = open('file.txt', 'r')
+content = f.read()
+f.close()  # 閉じ忘れると問題が起きる！
+
+# 良い例（withを使うと自動で閉じてくれる）
+with open('file.txt', 'r') as f:
+    content = f.read()
+# ← ここで自動的にファイルが閉じられる
+```
+
+**イメージ**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  with = 「使い終わったら自動で片付けてくれる」仕組み          │
+│                                                             │
+│  例：冷蔵庫を開けて食材を取り出す                            │
+│                                                             │
+│  普通：冷蔵庫を開ける → 食材を取る → 閉め忘れる！            │
+│  with：冷蔵庫を開ける → 食材を取る → 自動で閉まる           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 1-5. Base64エンコード・デコードとは？
+
+**エンコード = データを別の形式に変換すること**
+**デコード = 変換されたデータを元に戻すこと**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【日常の例：暗号ごっこ】                                    │
+│                                                             │
+│  元のメッセージ: 「こんにちは」                               │
+│       ↓ エンコード（変換）                                   │
+│  変換後: 「44GT44KT44Gr44Gh44Gv」  ← 読めない！              │
+│       ↓ デコード（復元）                                     │
+│  復元後: 「こんにちは」            ← 元に戻った！             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**なぜBase64を使う？**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  JWTトークン（ログイン証明書）は3つの部分からできている       │
+│                                                             │
+│  eyJhbGci... . eyJlbWFpbCI... . SflKxwRJ...                 │
+│       ↑              ↑              ↑                       │
+│    ヘッダー       ペイロード        署名                     │
+│   （形式情報）   （ユーザー情報）  （改ざん防止）             │
+│                      ↑                                      │
+│               ここにメールアドレスがBase64で入っている       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**具体例**
+```python
+import base64
+import json
+
+# JWTトークンの例（ペイロード部分）
+encoded = "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ"
+
+# ステップ1: Base64デコード
+decoded_bytes = base64.urlsafe_b64decode(encoded + '==')
+# → b'{"email":"tanaka@example.com","name":"\xe7\x94\xb0\xe4\xb8\xad"}'
+
+# ステップ2: 文字列に変換
+decoded_str = decoded_bytes.decode('utf-8')
+# → '{"email":"tanaka@example.com","name":"田中"}'
+
+# ステップ3: JSONとして解析
+data = json.loads(decoded_str)
+# → {'email': 'tanaka@example.com', 'name': '田中'}
+
+# ステップ4: メールアドレスを取り出す
+email = data.get('email')
+# → 'tanaka@example.com'
+```
+
+**図解**
+```
+eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ
+                            ↓
+                    Base64デコード
+                            ↓
+{"email":"tanaka@example.com","name":"田中"}
+                            ↓
+                    JSONとして解析
+                            ↓
+                    email を取り出す
+                            ↓
+                 tanaka@example.com
+```
+
+---
+
+## 2. ライブラリ読み込み
 
 ```python
 import os
@@ -28,184 +305,28 @@ from openai import OpenAI
 
 ### 各ライブラリの役割
 
-| ライブラリ | 役割 | 例え |
-|-----------|------|------|
-| `os` | 環境変数を読む | 「お店の設定書を読む」 |
-| `json` | JSONデータを扱う | 「注文票を読み書きする」 |
-| `base64` | データを変換する | 「暗号を解読する」 |
-| `datetime` | 日時を扱う | 「時計を見る」 |
-| `functions_framework` | Cloud Runで動かすため | 「厨房の設備」 |
-| `openai` | ChatGPT APIを呼ぶ | 「料理のレシピ本」 |
-
-### 詳細解説
-
-#### `import os`
-
-```python
-import os
-```
-
-**何をするもの？**
-- パソコン（サーバー）の「環境変数」を読み取るためのライブラリ
-
-**環境変数とは？**
-- コードの外に置く設定値
-- 例：`OPENAI_API_KEY`（AIのパスワード）、`ALLOWED_EMAILS`（許可するメール）
-
-**なぜ環境変数を使う？**
-```
-【悪い例】コードに直接書く
-api_key = "sk-abc123..."  ← GitHubに公開したら大変！
-
-【良い例】環境変数から読む
-api_key = os.environ.get('OPENAI_API_KEY')  ← 安全！
-```
-
-**使われている場所（このファイル内）**
-```python
-# 134行目: 許可メールアドレスを取得
-allowed_emails_str = os.environ.get('ALLOWED_EMAILS', '')
-
-# 303行目: OpenAI APIキーを取得
-client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-```
+| ライブラリ | 役割 | 使う場面 |
+|-----------|------|---------|
+| `os` | 環境変数を読む | APIキーや許可リストの取得 |
+| `json` | JSONデータを扱う | トークン解析、レスポンス作成 |
+| `base64` | データを変換する | JWTトークンのデコード |
+| `datetime` | 日時を扱う | ヘルスチェックの時刻表示 |
+| `functions_framework` | Cloud Run対応 | HTTPリクエストを受け取る |
+| `openai` | ChatGPT API | AIに質問を送る |
 
 ---
 
-#### `import json`
+## 3. 設定部分
 
-```python
-import json
-```
-
-**何をするもの？**
-- JSON形式のデータを扱うライブラリ
-
-**JSONとは？**
-```json
-{
-    "message": "こんにちは",
-    "user": "田中さん"
-}
-```
-- 人間にも読みやすく、プログラムでも扱いやすいデータ形式
-- ブラウザとサーバーの間でデータをやり取りする時に使う
-
-**使われている場所**
-```python
-# 160行目: JWTトークンを解読
-return json.loads(decoded).get('email')
-
-# 170行目: レスポンスを作成
-body = json.dumps(body, ensure_ascii=False)
-```
-
----
-
-#### `import base64`
-
-```python
-import base64
-```
-
-**何をするもの？**
-- データを「エンコード（変換）」「デコード（復元）」するライブラリ
-
-**なぜ必要？**
-- JWTトークン（ログイン証明書）はbase64でエンコードされている
-- それをデコードしてメールアドレスを取り出す
-
-**使われている場所**
-```python
-# 159行目: JWTトークンをデコード
-decoded = base64.urlsafe_b64decode(payload).decode('utf-8')
-```
-
----
-
-#### `from datetime import datetime`
-
-```python
-from datetime import datetime
-```
-
-**何をするもの？**
-- 現在の日時を取得する
-
-**使われている場所**
-```python
-# 334行目: ヘルスチェックで現在時刻を返す
-{'status': 'ok', 'timestamp': datetime.now().isoformat()}
-```
-
----
-
-#### `import functions_framework`
-
-```python
-import functions_framework
-```
-
-**何をするもの？**
-- Cloud Run functions でHTTPリクエストを受け取るためのライブラリ
-- Google公式が提供
-
-**重要な使い方**
-```python
-@functions_framework.http   # ← この「デコレータ」が重要！
-def app(request):           # ← この関数がリクエストを受け取る
-    ...
-```
-
-**デコレータ `@` とは？**
-- 関数に「目印」をつける仕組み
-- 「この関数がHTTPリクエストを受け取りますよ」とCloud Runに教える
-
----
-
-#### `from openai import OpenAI`
-
-```python
-from openai import OpenAI
-```
-
-**何をするもの？**
-- ChatGPT（OpenAI）のAPIを呼び出すライブラリ
-
-**使われている場所**
-```python
-# 303-309行目: AIに質問を送る
-client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-completion = client.chat.completions.create(
-    model='gpt-3.5-turbo',
-    messages=[{'role': 'user', 'content': message}],
-    max_tokens=1000,
-    temperature=0.7
-)
-```
-
----
-
-## 2. 設定部分
-
-### ALLOWED_ORIGINS（CORS設定）
+### ALLOWED_ORIGINS
 
 ```python
 ALLOWED_ORIGINS = ['*']
 ```
 
-**何をするもの？**
-- どのWebサイトからのアクセスを許可するかを決める
-
-**`'*'` の意味**
-- 「どこからでもOK」（開発用）
-
-**本番環境では？**
-```python
-ALLOWED_ORIGINS = [
-    'https://ai-chat-app-xxxxx.run.app'  # 自分のURLだけ許可
-]
-```
+**これは何？**
+- どのWebサイトからのアクセスを許可するかのリスト
+- `'*'` = どこからでもOK（開発用）
 
 ---
 
@@ -220,31 +341,22 @@ with open('script.js', 'r', encoding='utf-8') as f:
 ```
 
 **何をしている？**
+1. `front.html` ファイルを開く
+2. 中身を全部読み込む
+3. `HTML_CONTENT` という変数に保存
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  with open('front.html', 'r', encoding='utf-8') as f:      │
-│            ↑           ↑         ↑              ↑          │
-│       ファイル名   読み取り    文字コード    変数名         │
-│                    モード      （日本語対応）               │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**なぜ起動時に読み込む？**
+**なぜ最初に読み込む？**
 - リクエストのたびに読み込むと遅くなる
-- 一度読み込んでメモリに保存しておく
+- 一度読んでメモリに保存しておく
 
 ---
 
-## 3. ヘルパー関数
+## 4. ヘルパー関数
 
-「ヘルパー」= 補助する関数。メイン処理を助ける。
-
-### set_cors_headers
+### 4-1. set_cors_headers（CORS設定）
 
 ```python
 def set_cors_headers(headers, origin):
-    """CORSヘッダー設定"""
     if '*' in ALLOWED_ORIGINS or origin in ALLOWED_ORIGINS:
         headers['Access-Control-Allow-Origin'] = origin or '*'
     headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
@@ -252,54 +364,254 @@ def set_cors_headers(headers, origin):
     headers['Access-Control-Max-Age'] = '3600'
 ```
 
-**CORSとは？**
+#### 引数の説明
+
+| 引数 | 型 | 説明 |
+|------|-----|------|
+| `headers` | 辞書 | レスポンスに付けるヘッダー情報 |
+| `origin` | 文字列 | リクエスト元のURL（例：`https://example.com`） |
+
+#### 1行ずつ解説
+
+**1行目：条件判定**
+```python
+if '*' in ALLOWED_ORIGINS or origin in ALLOWED_ORIGINS:
+```
 
 ```
-【CORSがないと起こること】
-
-サイトA (evil.com)
-    ↓ あなたのサイトにリクエスト
-サイトB (あなたのサイト)
-    ↓
-ブラウザ: 「違うサイトからのリクエストは危険！ブロック！」
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  この条件は2つの判定を or で繋いでいる                       │
+│                                                             │
+│  判定1: '*' in ALLOWED_ORIGINS                              │
+│    → ALLOWED_ORIGINS に '*' が含まれるか？                  │
+│    → ['*'] なので True                                      │
+│                                                             │
+│  判定2: origin in ALLOWED_ORIGINS                           │
+│    → origin（リクエスト元URL）が許可リストに含まれるか？      │
+│                                                             │
+│  or で繋いでいるので、どちらかがTrueなら中の処理を実行        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-**各ヘッダーの意味**
+**2行目：ヘッダーに値を設定**
+```python
+headers['Access-Control-Allow-Origin'] = origin or '*'
+```
 
-| ヘッダー | 意味 |
-|---------|------|
-| `Access-Control-Allow-Origin` | どのサイトからのアクセスを許可するか |
-| `Access-Control-Allow-Methods` | どのHTTPメソッドを許可するか |
-| `Access-Control-Allow-Headers` | どのヘッダーを許可するか |
-| `Access-Control-Max-Age` | この設定を何秒間キャッシュするか |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  headers['キー名'] = 値                                      │
+│  → 辞書に値を追加する書き方                                  │
+│                                                             │
+│  origin or '*' の部分:                                       │
+│  → origin に値があればそれを使う                            │
+│  → origin が None や空なら '*' を使う                       │
+│                                                             │
+│  例:                                                        │
+│  origin = 'https://example.com'                             │
+│  → headers['Access-Control-Allow-Origin'] = 'https://example.com' │
+│                                                             │
+│  origin = None                                              │
+│  → headers['Access-Control-Allow-Origin'] = '*'             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3-5行目：固定ヘッダーの設定**
+```python
+headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+headers['Access-Control-Max-Age'] = '3600'
+```
+
+| ヘッダー | 値 | 意味 |
+|---------|-----|------|
+| `Access-Control-Allow-Methods` | `'GET, POST, OPTIONS'` | この3つのHTTPメソッドを許可 |
+| `Access-Control-Allow-Headers` | `'Content-Type, Authorization'` | この2つのヘッダーを許可 |
+| `Access-Control-Max-Age` | `'3600'` | この設定を3600秒（1時間）キャッシュ |
+
+#### CORSとは？（詳細解説）
+
+**CORS = Cross-Origin Resource Sharing（異なるオリジン間のリソース共有）**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【シナリオ】あなたのWebアプリ                               │
+│                                                             │
+│  あなたのサイト: https://your-app.run.app                   │
+│  ├── front.html  （画面）                                   │
+│  └── /api/chat   （API）                                    │
+│                                                             │
+│  普通の使い方:                                              │
+│  ユーザー → your-app.run.app にアクセス                    │
+│  front.html の JavaScript が /api/chat を呼ぶ               │
+│  → 同じサイトなので問題なし ✓                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【問題のシナリオ】悪意のあるサイトからの攻撃               │
+│                                                             │
+│  悪意のあるサイト: https://evil.com                         │
+│  ├── ページ内のJavaScriptで                                 │
+│  └── あなたの /api/chat を勝手に呼ぼうとする               │
+│                                                             │
+│  fetch('https://your-app.run.app/api/chat', {               │
+│      method: 'POST',                                        │
+│      body: JSON.stringify({ message: '...' })               │
+│  });                                                        │
+│                                                             │
+│  ↓ ブラウザの動き                                           │
+│                                                             │
+│  ブラウザ: 「待って！evil.com から your-app への            │
+│            リクエストだ。これは許可されてる？」              │
+│                                                             │
+│  → サーバーの Access-Control-Allow-Origin を確認            │
+│  → evil.com が許可されていなければ → ブロック！             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**つまりCORSは：**
+- ブラウザが行うセキュリティチェック
+- 「このサイトからのリクエストを許可しますか？」をサーバーに確認
+- サーバーが「OK」と言わなければブロック
+
+**注意：iframeとは別の話**
+- iframe埋め込みは `X-Frame-Options` ヘッダーで制御
+- CORSはJavaScriptの `fetch` や `XMLHttpRequest` の制御
 
 ---
 
-### set_security_headers
+### 4-2. set_security_headers（セキュリティ設定）
 
 ```python
 def set_security_headers(headers):
-    """セキュリティヘッダー設定"""
     headers['X-Content-Type-Options'] = 'nosniff'
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
 ```
 
-**各ヘッダーの意味**
+#### 1行ずつ解説
 
-| ヘッダー | 意味 | 防ぐ攻撃 |
-|---------|------|---------|
-| `X-Content-Type-Options` | ファイルタイプを厳密に判断 | MIMEスニッフィング |
-| `X-Frame-Options` | 他サイトへの埋め込み禁止 | クリックジャッキング |
-| `X-XSS-Protection` | XSS攻撃を検知してブロック | XSS攻撃 |
-| `Referrer-Policy` | リファラー情報の制限 | 情報漏洩 |
+**1. X-Content-Type-Options**
+```python
+headers['X-Content-Type-Options'] = 'nosniff'
+```
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【攻撃の例】                                               │
+│                                                             │
+│  攻撃者: 「image.jpg」という名前で悪意のあるJavaScriptを     │
+│          アップロードする                                   │
+│                                                             │
+│  ブラウザ: 「image.jpg って書いてあるけど、中身を見たら      │
+│            JavaScriptっぽいな。実行しちゃおう！」            │
+│  → 攻撃成功！                                               │
+│                                                             │
+│  【nosniffの効果】                                          │
+│                                                             │
+│  ブラウザ: 「nosniffが設定されてる。Content-Type通りに       │
+│            解釈しよう。画像として扱うから実行しない」        │
+│  → 攻撃失敗！                                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2. X-Frame-Options**
+```python
+headers['X-Frame-Options'] = 'DENY'
+```
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【攻撃の例：クリックジャッキング】                          │
+│                                                             │
+│  攻撃者のサイト evil.com:                                   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │  「無料プレゼント！ここをクリック！」                 │   │
+│  │                 ↓                                    │   │
+│  │  ┌───────────────────────────────────┐              │   │
+│  │  │ あなたのサイトをiframeで透明に   │              │   │
+│  │  │ 重ねて表示。「削除」ボタンの     │              │   │
+│  │  │ 位置に「プレゼント」ボタン       │              │   │
+│  │  └───────────────────────────────────┘              │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ユーザー: 「プレゼント！」をクリックしたつもりが            │
+│            → 実際は「削除」ボタンをクリックしていた         │
+│                                                             │
+│  【DENYの効果】                                             │
+│  → あなたのサイトをiframeに埋め込むことを禁止               │
+│  → この攻撃が不可能になる                                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3. X-XSS-Protection**
+```python
+headers['X-XSS-Protection'] = '1; mode=block'
+```
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【攻撃の例：XSS（クロスサイトスクリプティング）】           │
+│                                                             │
+│  攻撃者: URLに悪意のあるスクリプトを仕込む                   │
+│  https://your-app.com/search?q=<script>悪意のあるコード</script> │
+│                                                             │
+│  【1; mode=blockの効果】                                    │
+│  ブラウザ: 「XSS攻撃を検知！ページの表示をブロック」         │
+│                                                             │
+│  ※ 現代のブラウザは独自のXSS対策があるため、                │
+│    このヘッダーは補助的な役割                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4. Referrer-Policy**
+```python
+headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+```
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  【Referrer（リファラー）とは】                              │
+│                                                             │
+│  「どのページから来たか」の情報                              │
+│                                                             │
+│  例: Aページのリンクをクリック → Bページへ移動              │
+│  → BページはリファラーとしてAページのURLを受け取る          │
+│                                                             │
+│  【問題】                                                   │
+│  リファラーにはURLの全体が含まれることがある                │
+│  → URLにトークンやIDが含まれていたら情報漏洩！              │
+│                                                             │
+│  例: https://your-app.com/user/12345/secret-token           │
+│                                                             │
+│  【strict-origin-when-cross-originの効果】                  │
+│  同じサイト内: 完全なURL送信                                │
+│  別サイト宛て: ドメインのみ送信（https://your-app.com のみ）│
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 4. アクセス制御
+## 5. アクセス制御
 
-### is_email_allowed 関数
+### 5-1. is_email_allowed（メール許可チェック）
 
 ```python
 def is_email_allowed(email):
@@ -325,49 +637,90 @@ def is_email_allowed(email):
     return False
 ```
 
-**処理の流れ**
+#### 1行ずつ解説
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  is_email_allowed("tanaka@example.com")                     │
-├─────────────────────────────────────────────────────────────┤
-│  1. メールアドレスが空？ → False                             │
-│  2. 小文字に変換: "tanaka@example.com"                       │
-│  3. 環境変数から許可リストを取得                             │
-│     ALLOWED_EMAILS: "tanaka@example.com,yamada@test.com"    │
-│     ↓ カンマで分割                                          │
-│     ["tanaka@example.com", "yamada@test.com"]               │
-│  4. 許可リストに含まれる？ → True                            │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**リスト内包表記の解説**
-
+**1-3行目：空チェック**
 ```python
+def is_email_allowed(email):
+    if not email:
+        return False
+    lower_email = email.lower()
+```
+
+```
+email = None or ''（空）の場合
+  → if not email: が True
+  → return False で終了
+
+email = 'Tanaka@Example.com' の場合
+  → lower_email = 'tanaka@example.com' に変換
+    （大文字小文字を統一して比較しやすくする）
+```
+
+**4-5行目：許可メールリストの取得**
+```python
+allowed_emails_str = os.environ.get('ALLOWED_EMAILS', '')
 allowed_emails = [e.strip().lower() for e in allowed_emails_str.split(',') if e.strip()]
 ```
 
-これを分解すると：
+**詳細な分解**
 ```python
-# 1. カンマで分割
-parts = allowed_emails_str.split(',')  # ["tanaka@example.com", " yamada@test.com"]
+# 環境変数の例
+# ALLOWED_EMAILS = "tanaka@example.com, yamada@test.com, admin@company.co.jp"
 
-# 2. 各要素を処理
+# ステップ1: 環境変数を取得
+allowed_emails_str = os.environ.get('ALLOWED_EMAILS', '')
+# → "tanaka@example.com, yamada@test.com, admin@company.co.jp"
+# （もし環境変数がなければ空文字 '' になる）
+
+# ステップ2: カンマで分割
+parts = allowed_emails_str.split(',')
+# → ["tanaka@example.com", " yamada@test.com", " admin@company.co.jp"]
+#    ※ 空白が残っている
+
+# ステップ3: 各要素を処理
 allowed_emails = []
 for e in parts:
-    if e.strip():  # 空白を除去して空でなければ
-        allowed_emails.append(e.strip().lower())  # 小文字にして追加
+    cleaned = e.strip()       # 前後の空白を除去
+    if cleaned:               # 空でなければ
+        allowed_emails.append(cleaned.lower())  # 小文字にして追加
 
-# 結果: ["tanaka@example.com", "yamada@test.com"]
+# 結果
+# → ["tanaka@example.com", "yamada@test.com", "admin@company.co.jp"]
+```
+
+**リスト内包表記の読み方**
+```python
+[e.strip().lower() for e in allowed_emails_str.split(',') if e.strip()]
+ └──────────────┘     └─────────────────────────────┘    └─────────┘
+    「何をする」         「何から繰り返す」              「条件」
+```
+
+**8-11行目：許可チェック**
+```python
+if lower_email in allowed_emails:
+    return True
+for domain in allowed_domains:
+    if lower_email.endswith(domain):
+        return True
+```
+
+```
+チェック1: メールアドレスが許可リストに完全一致するか
+  例: tanaka@example.com in ["tanaka@example.com", "yamada@test.com"]
+  → True
+
+チェック2: メールアドレスが許可ドメインで終わるか
+  例: "tanaka@company.co.jp".endswith("@company.co.jp")
+  → True（会社のドメイン全員を許可する場合に使う）
 ```
 
 ---
 
-### get_email_from_token 関数
+### 5-2. get_email_from_token（トークンからメール取得）
 
 ```python
 def get_email_from_token(id_token):
-    """JWTトークンからメールアドレス取得"""
     try:
         payload = id_token.split('.')[1]
         padding = 4 - len(payload) % 4
@@ -379,229 +732,146 @@ def get_email_from_token(id_token):
         return None
 ```
 
-**JWTトークンの構造**
-
-```
-eyJhbGciOiJS...  .  eyJlbWFpbCI6InRh...  .  SflKxwRJSMeKKF2Q...
-     ↑                    ↑                      ↑
-  ヘッダー             ペイロード              署名
- （形式情報）        （ユーザー情報）       （改ざん防止）
-                         ↑
-                   ここにメールアドレスがある
-```
-
-**処理の流れ**
+#### 完全な処理の流れ
 
 ```python
-# 1. ピリオドで分割して2番目（ペイロード）を取得
-payload = id_token.split('.')[1]
-# "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ"
+# 入力されるJWTトークンの例
+id_token = "eyJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSJ9.abc123"
 
-# 2. Base64デコード用のパディング調整
-padding = 4 - len(payload) % 4
+# ステップ1: ピリオドで分割
+parts = id_token.split('.')
+# → ["eyJhbGciOiJSUzI1NiJ9", "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSJ9", "abc123"]
+#         ヘッダー                      ペイロード                      署名
+
+# ステップ2: ペイロード（2番目）を取得
+payload = parts[1]
+# → "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSJ9"
+
+# ステップ3: パディング調整（Base64の仕様に合わせる）
+# Base64は4文字ずつ処理するので、4の倍数にする必要がある
+padding = 4 - len(payload) % 4  # 何文字足りないか
 if padding != 4:
-    payload += '=' * padding
+    payload += '=' * padding  # '='で埋める
 
-# 3. Base64デコード
-decoded = base64.urlsafe_b64decode(payload).decode('utf-8')
-# '{"email":"tanaka@example.com","name":"田中"}'
+# ステップ4: Base64デコード
+decoded_bytes = base64.urlsafe_b64decode(payload)
+# → b'{"email":"tanaka@example.com"}'
 
-# 4. JSONとして解析してメールアドレスを取得
-json.loads(decoded).get('email')
-# "tanaka@example.com"
+# ステップ5: バイト列を文字列に変換
+decoded_str = decoded_bytes.decode('utf-8')
+# → '{"email":"tanaka@example.com"}'
+
+# ステップ6: JSON文字列を辞書に変換
+data = json.loads(decoded_str)
+# → {"email": "tanaka@example.com"}
+
+# ステップ7: emailを取得
+email = data.get('email')
+# → "tanaka@example.com"
+```
+
+**図解**
+```
+JWTトークン
+eyJhbGci...  .  eyJlbWFpbCI...  .  SflKxwRJ...
+     |               |               |
+  ヘッダー       ペイロード        署名
+                     ↓
+            split('.')[1]で取得
+                     ↓
+        eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSJ9
+                     ↓
+            Base64デコード
+                     ↓
+        {"email":"tanaka@example.com"}
+                     ↓
+            json.loads()で辞書に
+                     ↓
+            .get('email')で取得
+                     ↓
+            tanaka@example.com
 ```
 
 ---
 
-## 5. メインハンドラ（app関数）
+## 6. メインハンドラ
+
+### 6-1. エントリポイントの定義
 
 ```python
 @functions_framework.http
 def app(request):
 ```
 
-**これがエントリポイント！**
-
+**`@` とは？（デコレータ）**
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  ユーザーがアクセス                                          │
-│       ↓                                                     │
-│  Cloud Run: 「エントリポイントは 'app' だな」                │
-│       ↓                                                     │
-│  @functions_framework.http がついた関数を探す                │
-│       ↓                                                     │
-│  def app(request): を実行！                                 │
+│                                                             │
+│  @functions_framework.http                                  │
+│  def app(request):                                          │
+│                                                             │
+│  「app という関数を、HTTPリクエストを受け取る関数として       │
+│   Cloud Run に登録する」という意味                          │
+│                                                             │
+│  @（アットマーク）= 関数に目印をつける仕組み                 │
+│                                                             │
+│  イメージ:                                                  │
+│  ┌────────────────────────────────┐                        │
+│  │  受付係募集中                   │  ← Cloud Run          │
+│  └────────────────────────────────┘                        │
+│                                                             │
+│  def app(request):                                          │
+│      「はい！私が受付係です！」                              │
+│                                                             │
+│  @functions_framework.http                                  │
+│      「この人を受付係として登録してください」                │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**request オブジェクトの中身**
+### 6-2. requestオブジェクト
 
 ```python
-request.method      # 'GET' または 'POST' など
-request.path        # '/api/chat' などのパス
-request.headers     # {'Authorization': 'Bearer xxx', ...}
-request.get_json()  # {'message': 'こんにちは'} などのボディ
+def app(request):
+    # request = ブラウザから届いた情報全部
 ```
+
+| プロパティ | 説明 | 例 |
+|-----------|------|-----|
+| `request.method` | HTTPメソッド | `'GET'`, `'POST'` |
+| `request.path` | URLのパス | `'/'`, `'/api/chat'` |
+| `request.headers` | ヘッダー情報 | `{'Authorization': 'Bearer xxx'}` |
+| `request.get_json()` | ボディ（JSON） | `{'message': 'こんにちは'}` |
+
+### 6-3. 戻り値
+
+```python
+return (HTML_CONTENT, 200, headers)
+#         ↑          ↑      ↑
+#       本文     ステータス  ヘッダー
+```
+
+| ステータスコード | 意味 |
+|-----------------|------|
+| `200` | 成功 |
+| `400` | リクエストが不正（入力エラー） |
+| `401` | 認証が必要（ログインしていない） |
+| `403` | 権限なし（ログイン済みだが許可されていない） |
+| `404` | ページが見つからない |
+| `500` | サーバーエラー |
 
 ---
 
-## 6. 各APIエンドポイント
+## まとめ
 
-### トップページ表示（`/`）
+このドキュメントで学んだPython構文：
 
-```python
-if path == '/' and request.method == 'GET':
-    headers['Content-Type'] = 'text/html; charset=utf-8'
-    return (HTML_CONTENT, 200, headers)
-```
-
-**処理**
-1. パスが `/` で、メソッドが `GET` なら
-2. Content-Typeを `text/html` に設定（HTMLですよと伝える）
-3. HTMLの内容、ステータスコード200、ヘッダーを返す
-
-**戻り値の形式**
-```python
-return (本文, ステータスコード, ヘッダー)
-```
-
----
-
-### JavaScript配信（`/script.js`）
-
-```python
-if path == '/script.js' and request.method == 'GET':
-    headers['Content-Type'] = 'application/javascript; charset=utf-8'
-    return (SCRIPT_CONTENT, 200, headers)
-```
-
-**なぜ別で配信？**
-- `front.html` の中に `<script src="script.js">` がある
-- ブラウザは `script.js` を別途リクエストする
-- そのリクエストに応答する必要がある
-
----
-
-### アクセス権限チェック（`/api/check-access`）
-
-```python
-if path == '/api/check-access' and request.method == 'POST':
-    try:
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return make_response({'allowed': False, 'error': '認証トークンがありません'}, 401, headers=headers)
-
-        email = get_email_from_token(auth_header.split('Bearer ')[1])
-        if not email:
-            return make_response({'allowed': False, 'error': 'メールアドレス取得失敗'}, 401, headers=headers)
-
-        allowed = is_email_allowed(email)
-        print(f"アクセス: {email} → {'許可' if allowed else '拒否'}")
-        return make_response({'allowed': allowed}, headers=headers)
-    except:
-        return make_response({'allowed': False, 'error': 'エラーが発生しました'}, 500, headers=headers)
-```
-
-**処理の流れ**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. Authorization ヘッダーを取得                             │
-│     "Bearer eyJhbGciOiJS..."                                │
-│                                                             │
-│  2. "Bearer " で始まるか確認                                │
-│     → 始まらなければ 401 エラー                             │
-│                                                             │
-│  3. トークンからメールアドレスを取得                         │
-│     "tanaka@example.com"                                    │
-│                                                             │
-│  4. 許可リストに含まれるか確認                               │
-│     → 含まれれば {"allowed": true}                          │
-│     → 含まれなければ {"allowed": false}                     │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-### チャットAPI（`/api/chat`）
-
-```python
-if path == '/api/chat' and request.method == 'POST':
-    try:
-        # 認証チェック
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return make_response({'error': 'ログインが必要です'}, 401, headers=headers)
-
-        email = get_email_from_token(auth_header.split('Bearer ')[1])
-        if not is_email_allowed(email):
-            return make_response({'error': '権限がありません'}, 403, headers=headers)
-
-        # 入力チェック
-        body = request.get_json(silent=True) or {}
-        message = body.get('message', '')
-
-        if not message or not isinstance(message, str):
-            return make_response({'error': 'メッセージを入力してください'}, 400, headers=headers)
-        if len(message) > 10000:
-            return make_response({'error': 'メッセージが長すぎます'}, 400, headers=headers)
-
-        # AI呼び出し
-        client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-        completion = client.chat.completions.create(
-            model='gpt-3.5-turbo',
-            messages=[{'role': 'user', 'content': message}],
-            max_tokens=1000,
-            temperature=0.7
-        )
-
-        return make_response({'response': completion.choices[0].message.content}, headers=headers)
-
-    except Exception as e:
-        print(f'チャットエラー: {e}')
-        return make_response({'error': 'AIの処理中にエラーが発生しました'}, 500, headers=headers)
-```
-
-**処理の流れ**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. 認証チェック                                             │
-│     → ログインしているか？                                  │
-│     → 許可されたユーザーか？                                │
-│                                                             │
-│  2. 入力チェック                                             │
-│     → メッセージは空でないか？                              │
-│     → 文字数は10000文字以内か？                             │
-│                                                             │
-│  3. AI呼び出し                                               │
-│     → OpenAI API にメッセージを送信                         │
-│     → 回答を受け取る                                        │
-│                                                             │
-│  4. 結果を返す                                               │
-│     {"response": "AIの回答..."}                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
-**OpenAI API のパラメータ**
-
-| パラメータ | 意味 | 値の例 |
-|-----------|------|--------|
-| `model` | 使用するAIモデル | `gpt-3.5-turbo`, `gpt-4` |
-| `messages` | 会話履歴 | `[{'role': 'user', 'content': '質問'}]` |
-| `max_tokens` | 回答の最大長 | `1000`（約750文字） |
-| `temperature` | 回答の創造性 | `0`=固定的、`1`=創造的 |
-
----
-
-## ステータスコードの意味
-
-| コード | 意味 | 使用場面 |
-|--------|------|---------|
-| `200` | 成功 | 正常に処理完了 |
-| `204` | 成功（本文なし） | OPTIONSリクエストへの応答 |
-| `400` | リクエスト不正 | 入力値が不正 |
-| `401` | 認証が必要 | ログインしていない |
-| `403` | 権限なし | ログイン済みだが許可されていない |
-| `404` | 見つからない | 存在しないパスにアクセス |
-| `500` | サーバーエラー | 予期しないエラー |
+| 構文 | 意味 | 例 |
+|------|------|-----|
+| `dict['key'] = value` | 辞書に値を追加 | `headers['Content-Type'] = 'text/html'` |
+| `x in list` | リストに含まれるか | `'*' in ALLOWED_ORIGINS` |
+| `a or b` | aがあればa、なければb | `origin or '*'` |
+| `with open() as f:` | ファイルを安全に開く | ファイル読み込み |
+| `base64.decode()` | Base64をデコード | トークン解析 |
+| `@decorator` | 関数に目印をつける | `@functions_framework.http` |
+| `[x for x in list]` | リスト内包表記 | メールリストの処理 |
