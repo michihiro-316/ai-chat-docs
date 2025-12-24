@@ -35,8 +35,9 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
-extra_javascript:
-  - javascripts/toc-collapse.js
+# カスタムJavaScriptは削除（基本機能を妨げるため）
+# extra_javascript:
+#   - javascripts/toc-collapse.js
 
 markdown_extensions:
   - tables
@@ -54,6 +55,9 @@ markdown_extensions:
   - toc:
       permalink: true
       toc_depth: 3
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
 
 nav:
   - ホーム: index.md

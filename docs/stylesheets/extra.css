@@ -597,54 +597,9 @@ pre code,
 }
 
 /* ========================================
-   TOC折りたたみ機能（MkDocs Material対応 v2）
+   右サイドバー（TOC）- デフォルト動作を維持
    ======================================== */
-/* 右サイドバーを表示 */
-.md-sidebar--secondary {
-  display: block !important;
-}
-
-/* トグルボタン（リンクの外に配置） */
-.md-sidebar--secondary .toc-toggle {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 18px !important;
-  height: 18px !important;
-  font-size: 9px !important;
-  color: #666 !important;
-  cursor: pointer !important;
-  user-select: none !important;
-  flex-shrink: 0 !important;
-  margin-right: 2px !important;
-  border-radius: 3px !important;
-  transition: background 0.15s ease !important;
-}
-
-.md-sidebar--secondary .toc-toggle:hover {
-  color: #0066cc !important;
-  background: rgba(0, 102, 204, 0.1) !important;
-}
-
-/* 折りたたみ可能なアイテムのレイアウト */
-.md-sidebar--secondary .md-nav__item.toc-collapsible {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: flex-start !important;
-}
-
-/* リンクのスタイル（クリック可能に） */
-.md-sidebar--secondary .md-nav__item.toc-collapsible > .md-nav__link {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-/* ネストナビは全幅で表示 */
-.md-sidebar--secondary .md-nav__item.toc-collapsible > nav.md-nav,
-.md-sidebar--secondary .md-nav__item.toc-collapsible > .toc-nested-nav {
-  width: 100% !important;
-  flex-basis: 100% !important;
-}
+/* カスタムTOC折りたたみは削除 - MkDocs Materialのデフォルトを使用 */
 
 /* ========================================
    レスポンシブ対応
