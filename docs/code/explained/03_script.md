@@ -69,14 +69,11 @@ firebase.initializeApp(firebaseConfig);
 - Firebaseを初期化する
 - 設定情報を使ってFirebaseに接続する準備をする
 
-**イメージ**
-```
-設定情報を渡して
-  ↓
-Firebase: 「了解！my-chat-app-12345 プロジェクトですね」
-  ↓
-接続準備完了！
-```
+!!! tip "イメージ"
+
+    1. 設定情報を渡す
+    2. Firebase：「了解！my-chat-app-12345 プロジェクトですね」
+    3. 接続準備完了！
 
 ---
 
@@ -138,23 +135,14 @@ auth.onAuthStateChanged(async (user) => {
 });
 ```
 
-### 処理の流れ
+!!! note "処理の流れ：auth.onAuthStateChanged(...)"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  auth.onAuthStateChanged(...)                               │
-│                                                             │
-│  「ログイン状態が変わったら教えて」とFirebaseにお願いする      │
-│                                                             │
-│  変化1: 未ログイン → ログイン                               │
-│    → user に ユーザー情報 が入る                            │
-│    → if (user) が true                                     │
-│                                                             │
-│  変化2: ログイン → ログアウト                               │
-│    → user が null になる                                   │
-│    → if (user) が false                                    │
-└─────────────────────────────────────────────────────────────┘
-```
+    「ログイン状態が変わったら教えて」とFirebaseにお願いする
+
+    | 変化 | user の値 | if (user) |
+    |------|-----------|-----------|
+    | 未ログイン → ログイン | ユーザー情報が入る | true |
+    | ログイン → ログアウト | null になる | false |
 
 ### 各部分の解説
 
@@ -191,17 +179,19 @@ const isAllowed = await checkAccess(user);
 - 処理が終わるまで待つ
 - `checkAccess()` はサーバーに問い合わせるので時間がかかる
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  【await なしの場合】                                        │
-│  const isAllowed = checkAccess(user);  // Promise が返る    │
-│  console.log(isAllowed);  // Promise {<pending>} ???        │
-│                                                             │
-│  【await ありの場合】                                        │
-│  const isAllowed = await checkAccess(user);  // 待つ        │
-│  console.log(isAllowed);  // true または false              │
-└─────────────────────────────────────────────────────────────┘
-```
+!!! warning "await なしの場合"
+
+    ```javascript
+    const isAllowed = checkAccess(user);  // Promise が返る
+    console.log(isAllowed);  // Promise {<pending>} ???
+    ```
+
+!!! success "await ありの場合"
+
+    ```javascript
+    const isAllowed = await checkAccess(user);  // 待つ
+    console.log(isAllowed);  // true または false
+    ```
 
 ---
 
@@ -260,16 +250,14 @@ function showLogin() {
 }
 ```
 
-**何をしている？**
+!!! note "何をしている？"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  login-screen    : hidden を外す → 表示される              │
-│  chat-screen     : hidden を付ける → 非表示になる          │
-│  access-denied   : hidden を付ける → 非表示になる          │
-│  user-info       : hidden を付ける → 非表示になる          │
-└─────────────────────────────────────────────────────────────┘
-```
+    | 要素 | hidden | 結果 |
+    |------|--------|------|
+    | login-screen | 外す | 表示される |
+    | chat-screen | 付ける | 非表示になる |
+    | access-denied | 付ける | 非表示になる |
+    | user-info | 付ける | 非表示になる |
 
 **classList とは？**
 - 要素についているクラスを操作する
@@ -290,21 +278,16 @@ function showDenied(user) {
 }
 ```
 
-**何をしている？**
-- アクセス拒否画面を表示
-- 拒否されたメールアドレスを表示
+!!! note "何をしている？"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│            アクセスが許可されていません                      │
-│                                                             │
-│          ログイン中: tanaka@example.com                     │
-│                         ↑                                   │
-│              $('denied-email').textContent = user.email;    │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+    - アクセス拒否画面を表示
+    - 拒否されたメールアドレスを表示
+
+!!! example "画面表示イメージ"
+
+    **アクセスが許可されていません**
+
+    ログイン中: tanaka@example.com ← `$('denied-email').textContent = user.email;`
 
 ---
 
@@ -348,25 +331,15 @@ async function login() {
 }
 ```
 
-**処理の流れ**
+!!! note "処理の流れ"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. ユーザーが「Googleでログイン」ボタンをクリック           │
-│       ↓                                                     │
-│  2. login() 関数が呼ばれる                                  │
-│       ↓                                                     │
-│  3. auth.signInWithPopup() でポップアップが開く             │
-│       ↓                                                     │
-│  4. ユーザーがGoogleアカウントを選択                        │
-│       ↓                                                     │
-│  5. ログイン成功                                            │
-│       ↓                                                     │
-│  6. onAuthStateChanged が発火（自動）                       │
-│       ↓                                                     │
-│  7. checkAccess → showChat or showDenied                   │
-└─────────────────────────────────────────────────────────────┘
-```
+    1. ユーザーが「Googleでログイン」ボタンをクリック
+    2. `login()` 関数が呼ばれる
+    3. `auth.signInWithPopup()` でポップアップが開く
+    4. ユーザーがGoogleアカウントを選択
+    5. ログイン成功
+    6. `onAuthStateChanged` が発火（自動）
+    7. `checkAccess` → `showChat` or `showDenied`
 
 **try-catch とは？**
 ```javascript
@@ -387,20 +360,13 @@ async function logout() {
 }
 ```
 
-**処理の流れ**
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. ユーザーが「ログアウト」ボタンをクリック                 │
-│       ↓                                                     │
-│  2. logout() 関数が呼ばれる                                 │
-│       ↓                                                     │
-│  3. auth.signOut() でログアウト                             │
-│       ↓                                                     │
-│  4. onAuthStateChanged が発火（自動）                       │
-│       ↓                                                     │
-│  5. user が null なので showLogin() が呼ばれる              │
-└─────────────────────────────────────────────────────────────┘
-```
+!!! note "処理の流れ"
+
+    1. ユーザーが「ログアウト」ボタンをクリック
+    2. `logout()` 関数が呼ばれる
+    3. `auth.signOut()` でログアウト
+    4. `onAuthStateChanged` が発火（自動）
+    5. user が null なので `showLogin()` が呼ばれる
 
 ---
 
@@ -536,41 +502,24 @@ function addMessage(text, type) {
 }
 ```
 
-**処理の流れ**
+!!! note "処理の流れ：addMessage(\"こんにちは\", \"user\")"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  addMessage("こんにちは", "user")                           │
-│       ↓                                                     │
-│  1. div要素を作成                                           │
-│       <div></div>                                           │
-│       ↓                                                     │
-│  2. クラスを設定                                            │
-│       <div class="message user"></div>                      │
-│       ↓                                                     │
-│  3. テキストを設定                                          │
-│       <div class="message user">こんにちは</div>            │
-│       ↓                                                     │
-│  4. チャットコンテナに追加                                   │
-│       chatContainer.appendChild(div)                        │
-│       ↓                                                     │
-│  5. 一番下までスクロール                                    │
-│       chatContainer.scrollTop = chatContainer.scrollHeight  │
-└─────────────────────────────────────────────────────────────┘
-```
+    | ステップ | 処理内容 | 結果 |
+    |----------|----------|------|
+    | 1 | div要素を作成 | `<div></div>` |
+    | 2 | クラスを設定 | `<div class="message user"></div>` |
+    | 3 | テキストを設定 | `<div class="message user">こんにちは</div>` |
+    | 4 | チャットコンテナに追加 | `chatContainer.appendChild(div)` |
+    | 5 | 一番下までスクロール | `chatContainer.scrollTop = chatContainer.scrollHeight` |
 
-**scrollTop と scrollHeight**
-```
-┌────────────────────────────────┐
-│ メッセージ1                    │ ← scrollTop = 0 で一番上
-│ メッセージ2                    │
-│ メッセージ3                    │
-│ ...                            │
-│ メッセージ100                  │ ← scrollHeight で一番下
-└────────────────────────────────┘
+!!! tip "scrollTop と scrollHeight"
 
-scrollTop = scrollHeight にすると一番下に移動
-```
+    | プロパティ | 意味 |
+    |------------|------|
+    | `scrollTop = 0` | 一番上 |
+    | `scrollTop = scrollHeight` | 一番下 |
+
+    `scrollTop = scrollHeight` にすると一番下に移動
 
 ---
 
@@ -644,45 +593,21 @@ async function sendMessage() {
 }
 ```
 
-### 処理の流れ
+!!! note "処理の流れ"
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  1. ログインチェック                                         │
-│     if (!currentUser) return alert(...);                    │
-│                                                             │
-│  2. 入力値を取得・チェック                                   │
-│     const message = messageInput.value.trim();              │
-│     if (!message) return;  // 空なら何もしない               │
-│                                                             │
-│  3. 送信ボタンを無効化（連打防止）                           │
-│     sendBtn.disabled = true;                                │
-│                                                             │
-│  4. ユーザーのメッセージを表示                               │
-│     addMessage(message, 'user');                            │
-│                                                             │
-│  5. 入力欄をクリア                                          │
-│     messageInput.value = '';                                │
-│                                                             │
-│  6. ローディング表示                                         │
-│     const loading = addLoading();                           │
-│                                                             │
-│  7. サーバーに送信                                          │
-│     fetch('/api/chat', {...})                               │
-│                                                             │
-│  8. ローディングを削除                                       │
-│     loading.remove();                                       │
-│                                                             │
-│  9. 結果を表示                                              │
-│     addMessage(data.response, 'assistant');                 │
-│                                                             │
-│ 10. 送信ボタンを有効化                                       │
-│     sendBtn.disabled = false;                               │
-│                                                             │
-│ 11. 入力欄にフォーカス                                       │
-│     messageInput.focus();                                   │
-└─────────────────────────────────────────────────────────────┘
-```
+    | # | 処理 | コード |
+    |---|------|--------|
+    | 1 | ログインチェック | `if (!currentUser) return alert(...);` |
+    | 2 | 入力値を取得・チェック | `const message = messageInput.value.trim();` |
+    | 3 | 送信ボタンを無効化（連打防止） | `sendBtn.disabled = true;` |
+    | 4 | ユーザーのメッセージを表示 | `addMessage(message, 'user');` |
+    | 5 | 入力欄をクリア | `messageInput.value = '';` |
+    | 6 | ローディング表示 | `const loading = addLoading();` |
+    | 7 | サーバーに送信 | `fetch('/api/chat', {...})` |
+    | 8 | ローディングを削除 | `loading.remove();` |
+    | 9 | 結果を表示 | `addMessage(data.response, 'assistant');` |
+    | 10 | 送信ボタンを有効化 | `sendBtn.disabled = false;` |
+    | 11 | 入力欄にフォーカス | `messageInput.focus();` |
 
 ---
 
@@ -713,27 +638,12 @@ messageInput.addEventListener('keypress', e => {
 
 ## まとめ：ファイル間の連携
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│  front.html                                                 │
-│  ├── <button onclick="login()">                            │
-│  │       ↓ クリック                                        │
-│  │   script.js の login() が実行                           │
-│  │                                                         │
-│  ├── <button onclick="sendMessage()">                      │
-│  │       ↓ クリック                                        │
-│  │   script.js の sendMessage() が実行                     │
-│  │       ↓                                                 │
-│  │   fetch('/api/chat', {...})                             │
-│  │       ↓ リクエスト                                      │
-│  │   backend.py の /api/chat が処理                        │
-│  │       ↓ レスポンス                                      │
-│  │   script.js で結果を表示                                │
-│  │                                                         │
-│  └── <script src="script.js">                              │
-│          ↓ 読み込み                                        │
-│      script.js が実行される                                │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+!!! info "ファイル連携の全体像"
+
+    **front.html** から始まる処理の流れ：
+
+    | トリガー | 処理 |
+    |----------|------|
+    | `<button onclick="login()">` クリック | script.js の `login()` が実行 |
+    | `<button onclick="sendMessage()">` クリック | script.js の `sendMessage()` が実行 → `fetch('/api/chat')` → backend.py が処理 → script.js で結果を表示 |
+    | `<script src="script.js">` 読み込み | script.js が実行される |

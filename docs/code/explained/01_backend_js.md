@@ -471,22 +471,10 @@ authHeader && authHeader.startsWith('Bearer ')
 | `res.send()` | テキスト/HTMLを返す |
 | `async/await` | Pythonと同じ非同期処理 |
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│  ★ Python版との主な違い ★                                   │
-│                                                             │
-│  1. 戻り値の方法                                            │
-│     Python: return (body, status, headers)                  │
-│     Node.js: res.status(200).json(body)                     │
-│                                                             │
-│  2. 環境変数                                                │
-│     Python: import os → os.environ.get()                    │
-│     Node.js: process.env.NAME（import不要）                  │
-│                                                             │
-│  3. エントリポイント                                         │
-│     Python: @decorator + def app():                         │
-│     Node.js: functions.http('app', callback)                │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+!!! info "Python版との主な違い"
+
+    | 項目 | Python | Node.js |
+    |------|--------|---------|
+    | 戻り値の方法 | `return (body, status, headers)` | `res.status(200).json(body)` |
+    | 環境変数 | `import os` → `os.environ.get()` | `process.env.NAME`（import不要） |
+    | エントリポイント | `@decorator` + `def app():` | `functions.http('app', callback)` |

@@ -41,46 +41,23 @@
 
 ### 2.1 全体構成図
 
-```
-                              ┌─────────────────┐
-                              │     ユーザー      │
-                              │   （ブラウザ）     │
-                              └────────┬────────┘
-                                       │
-                                       │ HTTPS
-                                       │
-              ┌────────────────────────┼────────────────────────┐
-              │                        │                        │
-              ▼                        ▼                        ▼
-    companya.example     companyb.example     companyc.example
-         .co.jp                  .co.jp                  .co.jp
-              │                        │                        │
-              │ DNS (CNAME)            │ DNS (CNAME)            │ DNS (CNAME)
-              ▼                        ▼                        ▼
-   ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-   │ Cloud Run       │    │ Cloud Run       │    │ Cloud Run       │
-   │ functions       │    │ functions       │    │ functions       │
-   │ (tenant-a)      │    │ (tenant-b)      │    │ (tenant-c)      │
-   │                 │    │                 │    │                 │
-   │ - Dify          │    │ - Vertex AI     │    │ - カスタムAI     │
-   │ - Firebase Auth │    │ - Firebase Auth │    │ - Firebase Auth │
-   │ - 自動SSL証明書  │    │ - 自動SSL証明書  │    │ - 自動SSL証明書  │
-   └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
-            │                      │                      │
-            ▼                      ▼                      ▼
-   ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-   │ Secret Manager  │    │ Secret Manager  │    │ Secret Manager  │
-   │  tenant-a-*     │    │  tenant-b-*     │    │  tenant-c-*     │
-   └─────────────────┘    └─────────────────┘    └─────────────────┘
-            │                      │                      │
-            └──────────────────────┼──────────────────────┘
-                                   │
-                                   ▼
-                          ┌──────────────┐
-                          │    GitHub    │
-                          │ （コード管理）  │
-                          └──────────────┘
-```
+!!! info "アーキテクチャ概要"
+
+    **ユーザー（ブラウザ）** → HTTPS → **テナント別サブドメイン**
+
+    | テナント | サブドメイン | Cloud Run functions | 利用AI |
+    |---------|-------------|--------------------| ------|
+    | A社 | companya.example.co.jp | tenant-a | Dify |
+    | B社 | companyb.example.co.jp | tenant-b | Vertex AI |
+    | C社 | companyc.example.co.jp | tenant-c | カスタムAI |
+
+    **各Cloud Run functions に含まれるもの:**
+
+    - Firebase Auth（認証）
+    - 自動SSL証明書
+    - Secret Manager（テナント別: tenant-a-*, tenant-b-*, etc.）
+
+    **コード管理:** GitHub
 
 **構成のポイント:**
 - **シンプル構成**: Load Balancer不要、Cloud Run functionsに直接マッピング
@@ -92,21 +69,25 @@
 
 ### 2.2 サブドメインルーティング
 
-```
-ベースドメイン: example.co.jp
+!!! note "URL設計"
 
-【URL設計】
-{tenant}.example.co.jp/        → テナント専用トップページ
-{tenant}.example.co.jp/dify/*  → テナント専用 Difyアプリ
-{tenant}.example.co.jp/chat/*  → テナント専用 AIチャットボット
-{tenant}.example.co.jp/vertex/* → テナント専用 Vertex AIアプリ
+    **ベースドメイン:** `example.co.jp`
 
-【テナント例】
-companya.example.co.jp/        → A社専用トップページ
-companya.example.co.jp/dify/*  → A社 Difyアプリ
-companyb.example.co.jp/        → B社専用トップページ
-companyb.example.co.jp/vertex/* → B社 Vertex AIアプリ
-```
+    | パターン | 用途 |
+    |---------|------|
+    | `{tenant}.example.co.jp/` | テナント専用トップページ |
+    | `{tenant}.example.co.jp/dify/*` | テナント専用 Difyアプリ |
+    | `{tenant}.example.co.jp/chat/*` | テナント専用 AIチャットボット |
+    | `{tenant}.example.co.jp/vertex/*` | テナント専用 Vertex AIアプリ |
+
+!!! example "テナント例"
+
+    | URL | 説明 |
+    |-----|------|
+    | `companya.example.co.jp/` | A社専用トップページ |
+    | `companya.example.co.jp/dify/*` | A社 Difyアプリ |
+    | `companyb.example.co.jp/` | B社専用トップページ |
+    | `companyb.example.co.jp/vertex/*` | B社 Vertex AIアプリ |
 
 **DNS設定（テナント追加時）:**
 
@@ -119,53 +100,27 @@ companyb.example.co.jp/vertex/* → B社 Vertex AIアプリ
 
 ### 2.3 データフロー
 
-```
-【認証フロー】
+!!! note "認証フロー"
 
-1. ユーザーが https://companya.example.co.jp/ にアクセス
-   │
-   ▼
-2. DNS が Cloud Run functions (tenant-a) に解決
-   │
-   ▼
-3. Cloud Run functions が Firebase Auth の認証状態をチェック
-   │
-   ├── 未ログイン → Googleログイン画面にリダイレクト
-   │                 │
-   │                 ▼
-   │            Googleアカウントでログイン
-   │                 │
-   │                 ▼
-   │            Firebase ID Token 発行
-   │
-   └── ログイン済み → トークン検証
-       │
-       ├── 有効 + 許可ドメイン → 次のステップへ
-       │
-       └── 無効 or 許可外 → 403 アクセス拒否
-   │
-   ▼
-5. アプリ画面を表示
-```
+    1. ユーザーが `https://companya.example.co.jp/` にアクセス
+    2. DNS が Cloud Run functions (tenant-a) に解決
+    3. Cloud Run functions が Firebase Auth の認証状態をチェック
 
-```
-【AI機能利用フロー】
+    | 認証状態 | 処理 |
+    |---------|------|
+    | 未ログイン | Googleログイン画面にリダイレクト → ログイン → Firebase ID Token 発行 |
+    | ログイン済み（有効 + 許可ドメイン） | 次のステップへ |
+    | ログイン済み（無効 or 許可外） | 403 アクセス拒否 |
 
-1. ユーザーがAI機能を利用（ボタンクリック等）
-   │
-   ▼
-2. Cloud Run functions がリクエストを処理
-   │
-   ▼
-3. Secret Manager から該当テナントのAPIキーを取得
-   （例: tenant-a-openai-key）
-   │
-   ▼
-4. 外部AI API（OpenAI、Anthropic、Vertex AI等）を呼び出し
-   │
-   ▼
-5. 結果をユーザーに返却
-```
+    4. アプリ画面を表示
+
+!!! note "AI機能利用フロー"
+
+    1. ユーザーがAI機能を利用（ボタンクリック等）
+    2. Cloud Run functions がリクエストを処理
+    3. Secret Manager から該当テナントのAPIキーを取得（例: `tenant-a-openai-key`）
+    4. 外部AI API（OpenAI、Anthropic、Vertex AI等）を呼び出し
+    5. 結果をユーザーに返却
 
 ---
 
@@ -232,79 +187,39 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 
 ### 4.1 多層防御アーキテクチャ
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    第1層: HTTPS通信                          │
-│                   （全通信の暗号化）                          │
-│                                                             │
-│  - TLS 1.2以上                                               │
-│  - Cloud Run 自動SSL証明書                                    │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              第2層: Firebase Authentication                  │
-│                   （ユーザー認証）                            │
-│                                                             │
-│  - Googleログイン必須                                        │
-│  - 未認証ユーザーはログイン画面にリダイレクト                   │
-│  - テナントごとの許可ドメイン/ユーザー制御                      │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│               第3層: テナント分離                              │
-│              （データ・リソース分離）                          │
-│                                                             │
-│  - Cloud Run functions: テナントごとに独立した関数             │
-│  - Secret Manager: テナント別にシークレット管理                │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│               第4層: Secret Manager                          │
-│                （機密情報の保護）                              │
-│                                                             │
-│  - APIキーはコードに含めない                                  │
-│  - AES-256暗号化保存                                         │
-│  - アクセスログ記録                                          │
-└─────────────────────────────────────────────────────────────┘
-```
+!!! info "4層の防御"
+
+    | 層 | 名称 | 内容 |
+    |---|------|------|
+    | 第1層 | **HTTPS通信**（全通信の暗号化） | TLS 1.2以上、Cloud Run 自動SSL証明書 |
+    | 第2層 | **Firebase Authentication**（ユーザー認証） | Googleログイン必須、未認証ユーザーはリダイレクト、テナントごとの許可ドメイン/ユーザー制御 |
+    | 第3層 | **テナント分離**（データ・リソース分離） | Cloud Run functions: テナントごとに独立した関数、Secret Manager: テナント別にシークレット管理 |
+    | 第4層 | **Secret Manager**（機密情報の保護） | APIキーはコードに含めない、AES-256暗号化保存、アクセスログ記録 |
 
 **注意:** WAF（Cloud Armor）は本構成では使用しません。将来的にセキュリティ強化が必要な場合は Load Balancer + Cloud Armor の追加を検討してください。
 
 ### 4.2 テナント分離セキュリティ
 
-```
-【テナント分離の仕組み】
+!!! info "テナント分離の仕組み"
 
-┌─────────────────────────────────────────────────────────────┐
-│              サブドメイン分離                                  │
-│                                                             │
-│  - テナントごとに独立したサブドメイン + Cloud Run functions     │
-│  - companya.example.co.jp → tenant-a 関数のみアクセス      │
-│  - companyb.example.co.jp → tenant-b 関数のみアクセス      │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              シークレット分離                                  │
-│                                                             │
-│  - テナントごとにシークレットを分離                            │
-│  - tenant-a 関数 → tenant-a-* のシークレットのみ紐付け        │
-│  - tenant-b 関数 → tenant-b-* のシークレットのみ紐付け        │
-│  - 他テナントのシークレットは参照不可                          │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│              アプリケーション認証                              │
-│                                                             │
-│  - Firebase Auth でユーザー認証                               │
-│  - テナントごとの許可ユーザーリスト/ドメインで制御              │
-│  - 異なるテナントへのアクセスは403拒否                         │
-└─────────────────────────────────────────────────────────────┘
-```
+    **サブドメイン分離**
+
+    - テナントごとに独立したサブドメイン + Cloud Run functions
+    - `companya.example.co.jp` → tenant-a 関数のみアクセス
+    - `companyb.example.co.jp` → tenant-b 関数のみアクセス
+
+    **シークレット分離**
+
+    - テナントごとにシークレットを分離
+    - tenant-a 関数 → `tenant-a-*` のシークレットのみ紐付け
+    - tenant-b 関数 → `tenant-b-*` のシークレットのみ紐付け
+    - 他テナントのシークレットは参照不可
+
+    **アプリケーション認証**
+
+    - Firebase Auth でユーザー認証
+    - テナントごとの許可ユーザーリスト/ドメインで制御
+    - 異なるテナントへのアクセスは403拒否
 
 ### 4.3 アクセス制御マトリクス
 
@@ -330,25 +245,15 @@ GCPコンソールの「セキュリティ」→「シークレットを参照�
 
 ### 5.1 インターネット接続
 
-```
-                         インターネット
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-   companya.           companyb.            companyc.
-   example.co.jp    example.co.jp     example.co.jp
-        │                     │                     │
-        │ DNS (CNAME)         │ DNS (CNAME)         │ DNS (CNAME)
-        │ + HTTPS (443)       │ + HTTPS (443)       │ + HTTPS (443)
-        ▼                     ▼                     ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│ Cloud Run       │  │ Cloud Run       │  │ Cloud Run       │
-│ functions       │  │ functions       │  │ functions       │
-│ (tenant-a)      │  │ (tenant-b)      │  │ (tenant-c)      │
-│ asia-northeast1 │  │ asia-northeast1 │  │ asia-northeast1 │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
-```
+!!! info "ネットワーク構成"
+
+    **インターネット** → **テナント別サブドメイン** → **Cloud Run functions**
+
+    | サブドメイン | 接続方式 | Cloud Run functions | リージョン |
+    |-------------|---------|--------------------| ---------|
+    | companya.example.co.jp | DNS (CNAME) + HTTPS (443) | tenant-a | asia-northeast1 |
+    | companyb.example.co.jp | DNS (CNAME) + HTTPS (443) | tenant-b | asia-northeast1 |
+    | companyc.example.co.jp | DNS (CNAME) + HTTPS (443) | tenant-c | asia-northeast1 |
 
 ### 5.2 リージョン設定
 
