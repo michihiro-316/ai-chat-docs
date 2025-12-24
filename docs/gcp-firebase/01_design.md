@@ -109,6 +109,7 @@ companyb.example.co.jp/vertex/* → B社 Vertex AIアプリ
 ```
 
 **DNS設定（テナント追加時）:**
+
 | サブドメイン | レコードタイプ | 値 |
 |-------------|---------------|-----|
 | companya.example.co.jp | CNAME | Cloud Run サービスURL |

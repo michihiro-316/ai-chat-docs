@@ -25,7 +25,6 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
     - navigation.top
     - search.highlight
     - search.suggest
@@ -67,7 +66,7 @@ nav:
     - 構築設計書: bolt-supabase/01_design.md
     - 構築手順書: bolt-supabase/02_setup.md
   - ソースコード:
-    - コード解説:
+    - コード解説（学習用）:
       - 概要: code/explained/index.md
       - backend.py（Python）: code/explained/01_backend.md
       - backend.js（Node.js）: code/explained/01_backend_js.md
@@ -75,13 +74,13 @@ nav:
       - script.js: code/explained/03_script.md
       - エントリポイント: code/explained/04_entrypoint.md
       - 環境変数と.env: code/explained/05_environment.md
-    - Node.js:
+    - Node.js版（コピペ用）:
       - 概要: code/nodejs/index.md
       - backend.js: code/nodejs/backend.md
       - front.html: code/nodejs/front.md
       - script.js: code/nodejs/script.md
       - package.json: code/nodejs/package.md
-    - Python:
+    - Python版（コピペ用）:
       - 概要: code/python/index.md
       - backend.py: code/python/backend.md
       - front.html: code/python/front.md
