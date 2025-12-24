@@ -4,6 +4,10 @@
   --md-primary-fg-color: #0066cc;
   --md-accent-fg-color: #0066cc;
   --md-text-font: "Noto Sans JP", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* コードブロック背景を明るく強制 */
+  --md-code-bg-color: #f6f8fa !important;
+  --md-code-fg-color: #24292e !important;
+  --md-code-hl-color: rgba(255, 255, 0, 0.5);
 }
 
 /* ========================================
@@ -207,27 +211,56 @@
 }
 
 /* ========================================
-   コードブロック
+   コードブロック（明るい背景強制 - 全セレクタ対応）
    ======================================== */
-.md-typeset pre {
-  background: #f8f9fa;
-  border: 1px solid #e1e4e8;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.6;
-  padding: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  margin: 16px 0;
-  overflow-x: auto;
+.md-typeset pre,
+.md-typeset .highlight,
+.md-typeset .highlight pre,
+.md-typeset .highlighttable,
+.md-typeset .codehilite,
+.md-typeset .codehilite pre,
+.md-typeset code[class*="language-"],
+.md-typeset pre[class*="language-"],
+.highlight,
+.codehilite,
+pre,
+.md-typeset div.highlight,
+.md-typeset div.codehilite {
+  background: #f6f8fa !important;
+  background-color: #f6f8fa !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  overflow-x: auto !important;
 }
 
-.md-typeset pre code {
-  color: #24292e;
-  font-family: 'SF Mono', 'Roboto Mono', 'Menlo', 'Consolas', monospace;
-  background: transparent;
-  padding: 0;
-  font-size: 13px;
-  white-space: pre;
+.md-typeset pre,
+.md-typeset .highlight pre,
+.md-typeset .codehilite pre {
+  padding: 16px !important;
+  margin: 16px 0 !important;
+  background: #f6f8fa !important;
+  background-color: #f6f8fa !important;
+}
+
+.md-typeset pre code,
+.md-typeset .highlight code,
+.md-typeset .codehilite code,
+.md-typeset pre > code,
+pre code,
+.highlight code,
+.codehilite code {
+  color: #24292e !important;
+  font-family: 'SF Mono', 'Roboto Mono', 'Menlo', 'Consolas', monospace !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  white-space: pre !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* インラインコード */
@@ -441,62 +474,126 @@
 }
 
 /* ========================================
-   シンタックスハイライト（明るい背景用）
+   シンタックスハイライト（明るい背景用 - 全対応）
    ======================================== */
-.md-typeset .highlight {
-  background: #f8f9fa;
-  border: 1px solid #e1e4e8;
-  border-radius: 8px;
-}
-
-.md-typeset .highlight pre {
-  background: transparent;
-  margin: 0;
-  padding: 20px;
-}
 
 /* コメント */
 .md-typeset .highlight .c,
 .md-typeset .highlight .c1,
-.md-typeset .highlight .cm {
-  color: #6a737d;
+.md-typeset .highlight .cm,
+.md-typeset .highlight .cs,
+.md-typeset .highlight .cp,
+.highlight .c,
+.highlight .c1,
+.highlight .cm {
+  color: #6a737d !important;
 }
 
-/* キーワード */
+/* キーワード（if, for, def, return, class, in, not, and, or 等） */
 .md-typeset .highlight .k,
 .md-typeset .highlight .kd,
-.md-typeset .highlight .kn {
-  color: #d73a49;
+.md-typeset .highlight .kn,
+.md-typeset .highlight .kp,
+.md-typeset .highlight .kr,
+.md-typeset .highlight .kt,
+.md-typeset .highlight .kc,
+.md-typeset .highlight .ow,
+.highlight .k,
+.highlight .kd,
+.highlight .kn,
+.highlight .ow {
+  color: #d73a49 !important;
+  font-weight: 600 !important;
 }
 
 /* 文字列 */
 .md-typeset .highlight .s,
 .md-typeset .highlight .s1,
-.md-typeset .highlight .s2 {
-  color: #032f62;
+.md-typeset .highlight .s2,
+.md-typeset .highlight .sb,
+.md-typeset .highlight .sc,
+.md-typeset .highlight .se,
+.md-typeset .highlight .sh,
+.md-typeset .highlight .si,
+.md-typeset .highlight .sx,
+.md-typeset .highlight .sr,
+.md-typeset .highlight .ss,
+.highlight .s,
+.highlight .s1,
+.highlight .s2 {
+  color: #032f62 !important;
 }
 
 /* Docstring (Python) */
-.md-typeset .highlight .sd {
-  color: #6a737d;
+.md-typeset .highlight .sd,
+.highlight .sd {
+  color: #6a737d !important;
 }
 
-/* 関数名 */
+/* 関数名・メソッド名 */
+.md-typeset .highlight .nf,
+.md-typeset .highlight .fm,
+.md-typeset .highlight .nc,
+.highlight .nf,
+.highlight .nc {
+  color: #6f42c1 !important;
+}
+
+/* 変数名・名前 */
 .md-typeset .highlight .n,
-.md-typeset .highlight .nf {
-  color: #6f42c1;
+.md-typeset .highlight .na,
+.md-typeset .highlight .nb,
+.md-typeset .highlight .ni,
+.md-typeset .highlight .nl,
+.md-typeset .highlight .nn,
+.md-typeset .highlight .no,
+.md-typeset .highlight .nt,
+.md-typeset .highlight .nv,
+.highlight .n {
+  color: #24292e !important;
 }
 
-/* 演算子 */
+/* 組み込み関数（print, len, range 等） */
+.md-typeset .highlight .nb,
+.highlight .nb {
+  color: #005cc5 !important;
+}
+
+/* 演算子・括弧 */
 .md-typeset .highlight .o,
-.md-typeset .highlight .p {
-  color: #24292e;
+.md-typeset .highlight .p,
+.highlight .o,
+.highlight .p {
+  color: #24292e !important;
 }
 
 /* 数値 */
 .md-typeset .highlight .mi,
-.md-typeset .highlight .mf {
-  color: #005cc5;
+.md-typeset .highlight .mf,
+.md-typeset .highlight .mh,
+.md-typeset .highlight .mo,
+.highlight .mi,
+.highlight .mf {
+  color: #005cc5 !important;
+}
+
+/* デコレータ */
+.md-typeset .highlight .nd,
+.highlight .nd {
+  color: #6f42c1 !important;
+}
+
+/* self, cls */
+.md-typeset .highlight .bp,
+.highlight .bp {
+  color: #005cc5 !important;
+}
+
+/* True, False, None */
+.md-typeset .highlight .kc,
+.highlight .kc {
+  color: #005cc5 !important;
+  font-weight: 600 !important;
 }
 
 /* ========================================
