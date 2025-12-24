@@ -213,19 +213,19 @@
    コードブロック
    ======================================== */
 .md-typeset pre {
-  background: #1e1e1e;
-  border: none;
+  background: #f8f9fa;
+  border: 1px solid #e1e4e8;
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.6;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
   margin: 16px 0;
   overflow-x: auto;
 }
 
 .md-typeset pre code {
-  color: #d4d4d4;
+  color: #24292e;
   font-family: 'SF Mono', 'Roboto Mono', 'Menlo', 'Consolas', monospace;
   background: transparent;
   padding: 0;
@@ -428,7 +428,7 @@
   overflow-x: auto;
   font-size: 12px;
   line-height: 1.5;
-  color: #d4d4d4;
+  color: #24292e;
 }
 
 /* ========================================
@@ -444,10 +444,11 @@
 }
 
 /* ========================================
-   シンタックスハイライト
+   シンタックスハイライト（明るい背景用）
    ======================================== */
 .md-typeset .highlight {
-  background: #1e1e1e;
+  background: #f8f9fa;
+  border: 1px solid #e1e4e8;
   border-radius: 8px;
 }
 
@@ -461,44 +462,44 @@
 .md-typeset .highlight .c,
 .md-typeset .highlight .c1,
 .md-typeset .highlight .cm {
-  color: #6a9955;
+  color: #6a737d;
 }
 
 /* キーワード */
 .md-typeset .highlight .k,
 .md-typeset .highlight .kd,
 .md-typeset .highlight .kn {
-  color: #569cd6;
+  color: #d73a49;
 }
 
 /* 文字列 */
 .md-typeset .highlight .s,
 .md-typeset .highlight .s1,
 .md-typeset .highlight .s2 {
-  color: #ce9178;
+  color: #032f62;
 }
 
 /* Docstring (Python) */
 .md-typeset .highlight .sd {
-  color: #6a9955;
+  color: #6a737d;
 }
 
 /* 関数名 */
 .md-typeset .highlight .n,
 .md-typeset .highlight .nf {
-  color: #dcdcaa;
+  color: #6f42c1;
 }
 
 /* 演算子 */
 .md-typeset .highlight .o,
 .md-typeset .highlight .p {
-  color: #d4d4d4;
+  color: #24292e;
 }
 
 /* 数値 */
 .md-typeset .highlight .mi,
 .md-typeset .highlight .mf {
-  color: #b5cea8;
+  color: #005cc5;
 }
 
 /* ========================================
