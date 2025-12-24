@@ -35,6 +35,9 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/toc-collapse.js
+
 markdown_extensions:
   - tables
   - admonition

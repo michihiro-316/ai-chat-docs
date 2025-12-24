@@ -18,10 +18,7 @@
   margin-top: 0;
 }
 
-/* 右サイドバー（目次）を非表示にしてコンテンツを広く */
-.md-sidebar--secondary {
-  display: none;
-}
+/* 右サイドバー（目次）- TOC折りたたみセクションで制御 */
 
 /* ========================================
    ヘッダー
@@ -500,6 +497,45 @@
 .md-typeset .highlight .mi,
 .md-typeset .highlight .mf {
   color: #005cc5;
+}
+
+/* ========================================
+   TOC折りたたみ機能
+   ======================================== */
+/* 右サイドバーを表示に戻す */
+.md-sidebar--secondary {
+  display: block !important;
+}
+
+/* 折りたたみ可能なアイテム */
+.toc-collapsible > .md-nav__list {
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+/* 折りたたみ状態 */
+.toc-collapsed > .md-nav__list {
+  max-height: 0 !important;
+}
+
+/* 展開状態 */
+.toc-collapsible:not(.toc-collapsed) > .md-nav__list {
+  max-height: 1000px;
+}
+
+/* トグルボタン */
+.toc-toggle {
+  display: inline-block;
+  width: 16px;
+  font-size: 10px;
+  color: #86868b;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: transform 0.2s ease;
+}
+
+.toc-toggle:hover {
+  color: #0066cc;
 }
 
 /* ========================================
