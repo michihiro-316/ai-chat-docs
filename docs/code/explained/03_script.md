@@ -4,7 +4,7 @@
 
 ---
 
-## 目次
+## 目次 { data-toc-skip }
 
 1. [Firebase設定](#1-firebase設定)
 2. [初期化](#2-初期化)

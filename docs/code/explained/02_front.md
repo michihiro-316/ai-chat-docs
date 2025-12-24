@@ -4,7 +4,7 @@
 
 ---
 
-## 目次
+## 目次 { data-toc-skip }
 
 1. [HTMLの基本構造](#1-htmlの基本構造)
 2. [head部分](#2-head部分)
