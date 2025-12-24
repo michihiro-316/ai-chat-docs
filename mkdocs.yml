@@ -28,7 +28,7 @@ theme:
     - search.highlight
     - search.suggest
     - content.code.copy
-    - toc.follow
+    # toc.follow は一つ上がハイライトされる問題があるため無効化
   icon:
     logo: material/book-open-variant
 
