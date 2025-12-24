@@ -14,13 +14,27 @@
 
 ## ファイル構成
 
-```
-python/
-├── backend.py      ← サーバー側の処理（受付係）
-├── front.html      ← 画面の構造（見た目）
-├── script.js       ← 画面の動き（操作）
-└── requirements.txt ← 必要なライブラリ一覧
-```
+Python版とNode.js版があります。機能は同じです。
+
+=== "Python版"
+
+    ```
+    python/
+    ├── backend.py       ← サーバー側の処理（受付係）
+    ├── front.html       ← 画面の構造（見た目）
+    ├── script.js        ← 画面の動き（操作）
+    └── requirements.txt ← 必要なライブラリ一覧
+    ```
+
+=== "Node.js版"
+
+    ```
+    nodejs/
+    ├── backend.js       ← サーバー側の処理（受付係）
+    ├── front.html       ← 画面の構造（見た目）
+    ├── script.js        ← 画面の動き（操作）
+    └── package.json     ← 必要なライブラリ一覧
+    ```
 
 ---
 
@@ -44,7 +58,7 @@ python/
 │   │  料理をテーブルに運ぶ                         │              │
 │   └──────────────────────────────────────────────┘              │
 │                         ↓ 注文を伝える                          │
-│   backend.py = 厨房のシェフ                                     │
+│   backend（py/js）= 厨房のシェフ                                │
 │   ┌──────────────────────────────────────────────┐              │
 │   │  注文を受け取る                               │              │
 │   │  料理を作る（AI API呼び出し）                 │              │
@@ -65,7 +79,7 @@ python/
    ↓
 2. Cloud Run: 「/ へのGETリクエストだな」
    ↓
-3. backend.py: front.html の内容を返す
+3. backend: front.html の内容を返す
    ↓
 4. ブラウザ: HTML を解釈、script.js を読み込む
    ↓
@@ -83,9 +97,9 @@ python/
     ↓
 11. script.js: /api/check-access にトークンを送信
     ↓
-12. backend.py: トークンからメールアドレスを取得
+12. backend: トークンからメールアドレスを取得
     ↓
-13. backend.py: ALLOWED_EMAILS に含まれるか確認
+13. backend: ALLOWED_EMAILS に含まれるか確認
     ↓
 14. 許可されていれば → チャット画面を表示
     ↓
@@ -93,9 +107,9 @@ python/
     ↓
 16. script.js: /api/chat にメッセージを送信
     ↓
-17. backend.py: OpenAI API を呼び出し
+17. backend: OpenAI API を呼び出し
     ↓
-18. backend.py: AIの回答を返す
+18. backend: AIの回答を返す
     ↓
 19. script.js: 回答を画面に表示
 ```
@@ -106,10 +120,12 @@ python/
 
 | ファイル | 解説ページ | 役割 |
 |---------|-----------|------|
-| [backend.py](01_backend.md) | サーバー側処理 | リクエストを受け取り、処理して返す |
+| [backend（Python版）](01_backend.md) | サーバー側処理 | リクエストを受け取り、処理して返す |
+| [backend（Node.js版）](01_backend_js.md) | サーバー側処理 | リクエストを受け取り、処理して返す |
 | [front.html](02_front.md) | 画面構造 | 見た目を定義する（静的） |
 | [script.js](03_script.md) | 画面の動き | ユーザー操作を処理する |
 | [エントリポイント](04_entrypoint.md) | 仕組み解説 | なぜ `app` を指定するのか |
+| [環境変数と.envファイル](05_environment.md) | 仕組み解説 | 秘密情報の管理方法 |
 
 ---
 
@@ -124,3 +140,4 @@ python/
 | 関数 | 処理をまとめたもの | 「レシピ」 |
 | 引数 | 関数に渡す情報 | 「材料」 |
 | 戻り値 | 関数から返ってくる結果 | 「完成した料理」 |
+| 環境変数 | コードの外に置く設定値 | 「金庫の中の秘密メモ」 |

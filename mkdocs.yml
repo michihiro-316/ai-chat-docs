@@ -59,12 +59,6 @@ nav:
     - 構築設計書: gcp-firebase/01_design.md
     - 構築手順書: gcp-firebase/02_setup.md
     - 追加デプロイ手順: gcp-firebase/03_deploy_cost.md
-    - コード解説:
-      - 概要: gcp-firebase/code-explained/index.md
-      - backend.py: gcp-firebase/code-explained/01_backend.md
-      - front.html: gcp-firebase/code-explained/02_front.md
-      - script.js: gcp-firebase/code-explained/03_script.md
-      - エントリポイント: gcp-firebase/code-explained/04_entrypoint.md
     - 補足 - CloudRun版: gcp-firebase/99_cloudrun.md
     - 補足 - カスタムドメイン: gcp-firebase/99_custom_domain.md
     - 補足 - コンテナイメージ: gcp-firebase/99_container.md
@@ -73,6 +67,14 @@ nav:
     - 構築設計書: bolt-supabase/01_design.md
     - 構築手順書: bolt-supabase/02_setup.md
   - ソースコード:
+    - コード解説:
+      - 概要: code/explained/index.md
+      - backend.py（Python）: code/explained/01_backend.md
+      - backend.js（Node.js）: code/explained/01_backend_js.md
+      - front.html: code/explained/02_front.md
+      - script.js: code/explained/03_script.md
+      - エントリポイント: code/explained/04_entrypoint.md
+      - 環境変数と.env: code/explained/05_environment.md
     - Node.js:
       - 概要: code/nodejs/index.md
       - backend.js: code/nodejs/backend.md
