@@ -297,38 +297,44 @@ from openai import OpenAI
 
 このシステムは**複数の防御層**で守られています。
 
+```text
+Request (who is accessing?)
+         |
+         v
++-------------------------------------+
+| Layer 1: CORS                       |
+| Is access from allowed site?        |
+| -> No: Browser blocks response      |
++-------------------------------------+
+         | Yes
+         v
++-------------------------------------+
+| Layer 2: JWT Verification           |
+| Is login valid?                     |
+| -> No: Return error (no processing) |
++-------------------------------------+
+         | Yes
+         v
++-------------------------------------+
+| Layer 3: Allow List                 |
+| Is email/domain allowed?            |
+| -> No: Return error (no processing) |
++-------------------------------------+
+         | Yes
+         v
++-------------------------------------+
+| OpenAI API Call (Billing happens!)  |
++-------------------------------------+
 ```
-リクエスト（誰かがアクセス）
-    │
-    ▼
-┌─────────────────────────────────────┐
-│ 第1層：CORS（どこからのアクセス？）  │
-│                                     │
-│  許可されたサイトからのアクセス？    │
-│  → No: レスポンスをブラウザがブロック │
-└─────────────────────────────────────┘
-    │ Yes
-    ▼
-┌─────────────────────────────────────┐
-│ 第2層：JWT検証（ログインしてる？）   │
-│                                     │
-│  有効なログイン状態？                │
-│  → No: エラーを返す（処理しない）    │
-└─────────────────────────────────────┘
-    │ Yes
-    ▼
-┌─────────────────────────────────────┐
-│ 第3層：許可リスト（使っていい人？）  │
-│                                     │
-│  許可されたメール/ドメイン？         │
-│  → No: エラーを返す（処理しない）    │
-└─────────────────────────────────────┘
-    │ Yes
-    ▼
-┌─────────────────────────────────────┐
-│ ✓ OpenAI API呼び出し（ここで課金）   │
-└─────────────────────────────────────┘
-```
+
+**日本語での説明：**
+
+| 層 | 何をチェック？ | Noの場合 |
+|:--:|---------------|----------|
+| 第1層 CORS | 許可されたサイトから？ | ブラウザがブロック |
+| 第2層 JWT検証 | ログインしてる？ | エラー返す |
+| 第3層 許可リスト | 許可されたユーザー？ | エラー返す |
+| 通過後 | - | OpenAI API呼び出し（課金） |
 
 ### 各層の役割
 
@@ -379,43 +385,48 @@ from openai import OpenAI
 
 #### HTTP通信 = 手紙のやりとり
 
-```
-【リクエスト（お願いの手紙）】
+```text
+[Request]
+Browser  ------>  Server
+         "Give me /api/chat"
 
-ブラウザ ─────────────────────────────▶ サーバー
-         「/api/chat のデータください」
-
-
-【レスポンス（返事の手紙）】
-
-ブラウザ ◀───────────────────────────── サーバー
-         「はい、どうぞ」
+[Response]
+Browser  <------  Server
+         "Here you go"
 ```
 
-#### レスポンスには「2つの部分」がある
+#### サーバーからブラウザへの返事（レスポンス）には「2つの部分」がある
 
-```
-┌─────────────────────────────────────────┐
-│ ヘッダー（封筒の表書き・取扱い指示）     │ ← ブラウザへの「命令」
-│                                         │
-│  Content-Type: application/json         │
-│  X-Frame-Options: DENY                  │
-│  Access-Control-Allow-Origin: ...       │
-├─────────────────────────────────────────┤
-│ ボディ（中身）                           │ ← 実際のデータ
-│                                         │
-│  {"message": "こんにちは"}              │
-└─────────────────────────────────────────┘
+サーバーがブラウザに返す「返事」は、以下の構造になっています：
+
+```text
++------------------------------------------+
+| HEADER (Instructions for browser)        |
+|                                          |
+|   Content-Type: application/json         |
+|   X-Frame-Options: DENY                  |
+|   Access-Control-Allow-Origin: ...       |
++------------------------------------------+
+| BODY (Actual data)                       |
+|                                          |
+|   {"message": "Hello"}                   |
++------------------------------------------+
 ```
 
-**ヘッダー = 「この手紙をこう扱ってね」という指示書**
+| 部分 | 役割 | 例 |
+|------|------|-----|
+| **ヘッダー** | ブラウザへの「指示書」 | `X-Frame-Options: DENY` |
+| **ボディ** | 実際のデータ | `{"message": "Hello"}` |
+
+**ヘッダー = 「この返事をこう扱ってね」というブラウザへの命令**
 
 #### ブラウザはヘッダーに従う（仕様で決まっている）
 
-```
-サーバー: 「X-Frame-Options: DENY」（iframeに入れるな）
-    ↓
-ブラウザ: 「了解。このページはiframeに入れない」← 必ず従う
+```text
+Server: "X-Frame-Options: DENY"
+   |
+   v
+Browser: "OK, I won't put this page in iframe"
 ```
 
 これは**ブラウザの仕様（ルール）**です。
@@ -423,29 +434,26 @@ Chrome、Firefox、Edge など、すべての主要ブラウザがこのルー�
 
 #### 具体例：CORSヘッダーの動き
 
-```
-【1. evil.com からリクエストが来た】
+```text
+[1] evil.com sends request
 
-evil.com の JavaScript
-    │
-    │ fetch('https://your-app.run.app/api/chat')
-    ▼
-サーバー（your-app.run.app）
-    │
-    │ レスポンスを返す
-    │ ┌─────────────────────────────────┐
-    │ │ ヘッダー:                        │
-    │ │ Access-Control-Allow-Origin:    │
-    │ │   https://your-app.run.app      │ ← evil.com は書いてない！
-    │ └─────────────────────────────────┘
-    ▼
-ブラウザ
-    │
-    │ 「Origin: evil.com だけど、
-    │   許可されてるのは your-app.run.app だけ...」
-    │
-    ▼
-JavaScript にデータを渡さない！（ブロック）
+evil.com (JavaScript)
+   |
+   |  fetch('https://your-app.run.app/api/chat')
+   v
+Server (your-app.run.app)
+   |
+   |  Response with header:
+   |  +----------------------------------+
+   |  | Access-Control-Allow-Origin:     |
+   |  |   https://your-app.run.app       |
+   |  +----------------------------------+
+   v
+Browser checks:
+   "Origin is evil.com, but only your-app.run.app is allowed..."
+   |
+   v
+BLOCKED! (Data not passed to JavaScript)
 ```
 
 #### つまり
