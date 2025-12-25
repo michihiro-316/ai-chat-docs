@@ -742,6 +742,29 @@ headers['Access-Control-Max-Age'] = '3600'
     **流れ：**
     ユーザー → your-app.run.app にアクセス → front.html の JavaScript が `/api/chat` を呼ぶ → **同じサイトなので問題なし ✓**
 
+!!! tip "このシステムは同じオリジン"
+
+    今回はCloud Runで**フロントエンド（front.html）もバックエンド（API）も同じサービス**で動かしています。
+
+    ```
+    https://your-app.run.app/          ← front.html（画面）
+    https://your-app.run.app/api/chat  ← API
+    ```
+
+    **同じオリジン**なので、実はCORSの問題は発生しません。
+
+    ただし、本番環境では念のため `ALLOWED_ORIGINS` を設定しておくと安全です：
+
+    ```python
+    # 開発用（現在）
+    ALLOWED_ORIGINS = ['*']
+
+    # 本番用（推奨）
+    ALLOWED_ORIGINS = ['https://your-app-xxxxx-an.a.run.app']
+    ```
+
+    ※ `your-app-xxxxx-an.a.run.app` は実際のCloud Run URLに置き換えてください。
+
 !!! danger "シナリオ2：悪意のあるサイトからの攻撃"
 
     **悪意のあるサイト:** `https://evil.com`
