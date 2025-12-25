@@ -399,7 +399,87 @@ emails = [e.strip().lower() for e in emails_str.split(',') if e.strip()]
 
 ---
 
-### 1-8. `with open()` とは？
+### 1-8. try / except（エラー処理）
+
+**try / except = エラーが起きても止まらないようにする**
+
+```python
+try:
+    result = 10 / 0  # ← ゼロで割るとエラー！
+except:
+    result = 0       # ← エラーが起きたらこっちを実行
+    print('エラーが発生しました')
+
+# → エラーが発生しました
+# → result = 0
+```
+
+!!! note "try / exceptの構造"
+
+    ```python
+    try:
+        エラーが起きるかもしれない処理
+    except:
+        エラーが起きたときの処理
+    ```
+
+    | 部分 | 意味 |
+    |------|------|
+    | `try` | 「試す」ブロック |
+    | `except` | 「例外（エラー）が起きたら」ブロック |
+
+**なぜ必要？**
+
+tryがないと、エラーでプログラム全体が止まってしまいます。
+
+```python
+# tryなし → プログラムが止まる
+result = 10 / 0  # ← ここでエラー！以降の処理が実行されない
+
+# tryあり → エラーを処理して続行
+try:
+    result = 10 / 0
+except:
+    result = 0
+print('処理を続行')  # ← これが実行される
+```
+
+!!! example "イメージ：転んでも立ち上がる"
+
+    | 状況 | tryなし | tryあり |
+    |------|---------|---------|
+    | 石につまずく | 転んで動けなくなる | 転んでも立ち上がって歩き続ける |
+
+**このコードでの使われ方**
+```python
+def get_email_from_token(id_token):
+    try:
+        # トークンからメールを取り出す処理
+        payload = id_token.split('.')[1]
+        # ... デコード処理 ...
+        return json.loads(decoded).get('email')
+    except:
+        # 何かエラーが起きたら None を返す
+        return None
+```
+
+!!! tip "なぜ get_email_from_token で try を使う？"
+
+    トークンが壊れている・形式が違う・空っぽなど、様々な理由でエラーが起きる可能性があります。
+
+    | 起きうるエラー | 原因 |
+    |---------------|------|
+    | `IndexError` | トークンに `.` がない（分割できない） |
+    | `UnicodeDecodeError` | Base64デコードに失敗 |
+    | `JSONDecodeError` | JSON形式じゃない |
+
+    **全部個別に対処するのは大変** → `try/except` でまとめて処理
+
+    エラーが起きたら `None` を返し、呼び出し元で「メールが取れなかった」として処理します。
+
+---
+
+### 1-9. `with open()` とは？
 
 **`with open()` = ファイルを安全に開いて読む方法**
 
@@ -453,7 +533,7 @@ with open('file.txt', 'r') as f:
 
 ---
 
-### 1-9. Base64エンコード・デコードとは？
+### 1-10. Base64エンコード・デコードとは？
 
 - **エンコード** = データを別の形式に変換すること
 - **デコード** = 変換されたデータを元に戻すこと
@@ -1237,7 +1317,7 @@ allowed_emails = [e.strip().lower() for e in allowed_emails_str.split(',') if e.
 
 !!! info "基礎知識"
 
-    forループとリスト内包表記の基本は [1-8. forループ](#1-8-for-ループ繰り返し処理) と [1-9. リスト内包表記](#1-9-リスト内包表記省略形) で解説しています。
+    forループとリスト内包表記の基本は [1-6. forループ](#1-6-for-ループ繰り返し処理) と [1-7. リスト内包表記](#1-7-リスト内包表記省略形) で解説しています。
 
 **この行が何をしているか：**
 
@@ -1423,6 +1503,7 @@ return (HTML_CONTENT, 200, headers)
 | `dict['key'] = value` | 辞書に値を追加 | `headers['Content-Type'] = 'text/html'` |
 | `x in list` | リストに含まれるか | `'*' in ALLOWED_ORIGINS` |
 | `a or b` | aがあればa、なければb | `origin or '*'` |
+| `try: ... except:` | エラーを処理して続行 | トークン解析のエラー処理 |
 | `with open() as f:` | ファイルを安全に開く | ファイル読み込み |
 | `base64.decode()` | Base64をデコード | トークン解析 |
 | `@decorator` | 関数に目印をつける | `@functions_framework.http` |
