@@ -141,7 +141,133 @@ print(result)  # → '田中'
 
 ---
 
-### 1-4. `with open()` とは？
+### 1-4. if文（条件分岐）
+
+**if文 = 条件によって処理を分ける**
+
+```python
+age = 20
+
+if age >= 18:
+    print('成人です')
+else:
+    print('未成年です')
+
+# → 成人です
+```
+
+!!! note "if文の構造"
+
+    ```python
+    if 条件:
+        条件がTrueのときの処理
+    else:
+        条件がFalseのときの処理
+    ```
+
+    **インデント（字下げ）が重要！**
+    Pythonでは、インデントでブロック（処理のまとまり）を表します。
+
+**複数の条件（elif）**
+```python
+score = 75
+
+if score >= 90:
+    print('A')
+elif score >= 70:
+    print('B')
+elif score >= 50:
+    print('C')
+else:
+    print('D')
+
+# → B
+```
+
+**このコードでの使われ方**
+```python
+# メールが許可リストにあるかチェック
+if email in allowed_list:
+    return True   # 許可
+else:
+    return False  # 拒否
+```
+
+!!! tip "よく使う条件"
+
+    | 条件 | 意味 | 例 |
+    |------|------|-----|
+    | `==` | 等しい | `status == 200` |
+    | `!=` | 等しくない | `error != None` |
+    | `in` | 含まれる | `'@' in email` |
+    | `not` | 否定 | `if not email:` （emailが空なら） |
+
+---
+
+### 1-5. def（関数定義）
+
+**def = 処理をまとめて名前をつける**
+
+```python
+def greet(name):
+    return f'こんにちは、{name}さん'
+
+# 使う
+message = greet('田中')
+print(message)  # → こんにちは、田中さん
+```
+
+!!! note "関数の構造"
+
+    ```python
+    def 関数名(引数):
+        処理
+        return 戻り値
+    ```
+
+    | 部分 | 意味 |
+    |------|------|
+    | `def` | 「関数を定義する」という宣言 |
+    | `greet` | 関数の名前（自由につける） |
+    | `(name)` | 引数（関数に渡す値） |
+    | `return` | 結果を返す |
+
+**引数がない関数**
+```python
+def say_hello():
+    return 'Hello!'
+
+print(say_hello())  # → Hello!
+```
+
+**複数の引数**
+```python
+def add(a, b):
+    return a + b
+
+result = add(3, 5)
+print(result)  # → 8
+```
+
+**このコードでの使われ方**
+```python
+# ヘッダーを設定する関数
+def set_cors_headers(headers, origin):
+    headers['Access-Control-Allow-Origin'] = origin
+    # ... 他の設定
+```
+
+!!! info "なぜ関数を使う？"
+
+    | メリット | 説明 |
+    |---------|------|
+    | 再利用 | 同じ処理を何度も書かなくてよい |
+    | 整理 | コードが読みやすくなる |
+    | 保守 | 修正が1箇所で済む |
+
+---
+
+### 1-6. `with open()` とは？
 
 **`with open()` = ファイルを安全に開いて読む方法**
 
@@ -195,7 +321,7 @@ with open('file.txt', 'r') as f:
 
 ---
 
-### 1-5. Base64エンコード・デコードとは？
+### 1-7. Base64エンコード・デコードとは？
 
 - **エンコード** = データを別の形式に変換すること
 - **デコード** = 変換されたデータを元に戻すこと
@@ -262,6 +388,138 @@ eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ
                     email を取り出す
                             ↓
                  tanaka@example.com
+```
+
+---
+
+### 1-8. for ループ（繰り返し処理）
+
+**for ループ = リストの中身を1つずつ取り出して処理する**
+
+```python
+fruits = ['りんご', 'みかん', 'ぶどう']
+
+for fruit in fruits:
+    print(fruit)
+```
+
+**実行結果：**
+```
+りんご
+みかん
+ぶどう
+```
+
+!!! note "for ループの読み方"
+
+    ```python
+    for fruit in fruits:
+        print(fruit)
+    ```
+
+    **日本語で読むと：**
+    「fruits の中から 1つずつ fruit として取り出して、print(fruit) を実行する」
+
+    | 回数 | fruit の値 | 実行される処理 |
+    |:----:|-----------|---------------|
+    | 1回目 | `'りんご'` | `print('りんご')` |
+    | 2回目 | `'みかん'` | `print('みかん')` |
+    | 3回目 | `'ぶどう'` | `print('ぶどう')` |
+
+**このコードでの使われ方**
+```python
+# 許可ドメインをチェックする
+allowed_domains = ['@example.com', '@company.co.jp']
+email = 'tanaka@company.co.jp'
+
+for domain in allowed_domains:
+    if email.endswith(domain):
+        print('許可されたドメインです')
+```
+
+!!! info "よく使うメソッド"
+
+    | メソッド | 役割 | 例 |
+    |---------|------|-----|
+    | `strip()` | 前後の空白を除去 | `" hello "` → `"hello"` |
+    | `lower()` | 小文字に変換 | `"TaNaKa"` → `"tanaka"` |
+    | `split(',')` | カンマで分割してリストに | `"a,b,c"` → `['a','b','c']` |
+    | `endswith()` | 指定文字列で終わるか | `"test@a.com".endswith("@a.com")` → `True` |
+
+---
+
+### 1-9. リスト内包表記（省略形）
+
+for ループを**1行で書ける**省略記法です。
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+# 普通の書き方（4行）
+doubled = []
+for n in numbers:
+    doubled.append(n * 2)
+# → [2, 4, 6, 8, 10]
+
+# リスト内包表記（1行）
+doubled = [n * 2 for n in numbers]
+# → [2, 4, 6, 8, 10]
+```
+
+**同じ結果**になります。
+
+!!! tip "リスト内包表記の読み方"
+
+    ```python
+    [n * 2 for n in numbers]
+    ```
+
+    **読む順番は「右から左」：**
+
+    | 順番 | 部分 | 意味 |
+    |:----:|------|------|
+    | ① | `for n in numbers` | numbers から1つずつ n として取り出す |
+    | ② | `n * 2` | それを2倍にしてリストに追加 |
+
+    ```text
+    [  ②何をする    for  ①何から取り出す  ]
+    ```
+
+**条件付きの場合（if を追加）**
+```python
+numbers = [1, 2, 3, 4, 5]
+
+# 偶数だけを2倍にする
+doubled_even = [n * 2 for n in numbers if n % 2 == 0]
+# → [4, 8]  （2と4だけが偶数）
+```
+
+!!! note "条件付きの読み方"
+
+    ```python
+    [n * 2 for n in numbers if n % 2 == 0]
+    ```
+
+    | 順番 | 部分 | 意味 |
+    |:----:|------|------|
+    | ① | `for n in numbers` | numbers から1つずつ取り出す |
+    | ② | `if n % 2 == 0` | 偶数なら |
+    | ③ | `n * 2` | 2倍にしてリストに追加 |
+
+    **読む順番は ①→②→③ です！**
+
+    ```text
+    [  ③何をする    for  ①何から取り出す  if  ②条件  ]
+    ```
+
+**このコードでの使われ方**
+```python
+# メールリストを整形する
+emails_str = "tanaka@example.com, YAMADA@test.com,  admin@company.co.jp"
+
+# 分割 → 空白除去 → 小文字化 を1行で
+emails = [e.strip().lower() for e in emails_str.split(',') if e.strip()]
+# → ['tanaka@example.com', 'yamada@test.com', 'admin@company.co.jp']
 ```
 
 ---
@@ -630,6 +888,14 @@ with open('script.js', 'r', encoding='utf-8') as f:
 
 ### 5-1. set_cors_headers（CORS設定）
 
+この関数は、レスポンスにCORSヘッダーを追加します。
+
+!!! info "CORSとは？"
+
+    CORSの概念（なぜ必要か、何を守るか）については [3. セキュリティの全体像](#3-セキュリティの全体像なぜ安全) で詳しく解説しています。
+
+    ここでは**コードの読み方**と**実際の設定方法**を解説します。
+
 ```python
 def set_cors_headers(headers, origin):
     if '*' in ALLOWED_ORIGINS or origin in ALLOWED_ORIGINS:
@@ -692,38 +958,26 @@ headers['Access-Control-Max-Age'] = '3600'
 | `Access-Control-Allow-Headers` | `'Content-Type, Authorization'` | この2つのヘッダーを許可 |
 | `Access-Control-Max-Age` | `'3600'` | この設定を3600秒（1時間）キャッシュ |
 
-#### CORSとは？（詳細解説）
+#### オリジン（Origin）とは？
 
-**CORS = Cross-Origin Resource Sharing（異なるオリジン間のリソース共有）**
+オリジンは「**プロトコル + ドメイン + ポート**」の組み合わせです。
 
-!!! tip "豆知識：オリジン（Origin）とは？"
+```
+https://your-app.run.app:443
+└─┬──┘ └───────┬───────┘└┬─┘
+プロトコル   ドメイン    ポート
+```
 
-    オリジンは「**プロトコル + ドメイン + ポート**」の組み合わせです。
+**同じオリジン vs 別オリジン**
 
-    | 要素 | 説明 | 例 |
-    |------|------|-----|
-    | **プロトコル** | 通信の方式 | `https://` または `http://` |
-    | **ドメイン** | サーバーの住所 | `your-app.run.app` |
-    | **ポート** | サーバーの入口番号 | `:443`（https）、`:80`（http）※省略可 |
-
-    ```
-    https://your-app.run.app:443
-    └─┬──┘ └───────┬───────┘└┬─┘
-    プロトコル   ドメイン    ポート
-    ```
-
-    **同じオリジン vs 別オリジン**
-
-    | URL | `https://your-app.run.app` と比較 | 理由 |
-    |-----|----------------------------------|------|
-    | `https://your-app.run.app/api/chat` | 同じ | パスが違うだけ |
-    | `http://your-app.run.app` | **別** | プロトコルが違う |
-    | `https://evil.com` | **別** | ドメインが違う |
-    | `https://your-app.run.app:8080` | **別** | ポートが違う |
+| URL | `https://your-app.run.app` と比較 | 理由 |
+|-----|----------------------------------|------|
+| `https://your-app.run.app/api/chat` | 同じ | パスが違うだけ |
+| `http://your-app.run.app` | **別** | プロトコルが違う |
+| `https://evil.com` | **別** | ドメインが違う |
+| `https://your-app.run.app:8080` | **別** | ポートが違う |
 
 !!! info "httpsとhttpの違い（ハガキ vs 封筒）"
-
-    **日常の例えで理解しましょう：**
 
     | 方式 | 例え | 中身 |
     |------|------|------|
@@ -732,15 +986,29 @@ headers['Access-Control-Max-Age'] = '3600'
 
     本番環境では必ず **https** を使いましょう（Cloud Runは自動でhttpsになります）。
 
-!!! success "シナリオ1：普通の使い方（問題なし）"
+#### HTTPメソッドの役割
 
-    **あなたのサイト:** `https://your-app.run.app`
+| メソッド | 用途 | 具体例 |
+|---------|------|--------|
+| **GET** | データを取得する | ページ表示、ユーザー情報取得 |
+| **POST** | データを送信・処理する | チャット送信、ログイン処理 |
+| **OPTIONS** | 事前確認（プリフライト） | 「このリクエスト送っていい？」とブラウザがサーバーに確認 |
 
-    - `front.html`（画面）
-    - `/api/chat`（API）
+!!! note "OPTIONSリクエストの流れ（プリフライト）"
 
-    **流れ：**
-    ユーザー → your-app.run.app にアクセス → front.html の JavaScript が `/api/chat` を呼ぶ → **同じサイトなので問題なし ✓**
+    ブラウザは「本番のリクエスト」を送る前に、まず「送っていいか？」を確認します。
+
+    ```
+    ブラウザ: 「POSTリクエスト送りたいんだけど、いい？」（OPTIONS）
+        ↓
+    サーバー: 「このオリジンからならOK」または「ダメ」
+        ↓
+    ブラウザ: OKなら本番のPOSTを送信、ダメならブロック
+    ```
+
+    この仕組みにより、許可されていないサイトからの不正なリクエストを防いでいます。
+
+#### 実際の設定方法
 
 !!! tip "このシステムは同じオリジン"
 
@@ -765,75 +1033,7 @@ headers['Access-Control-Max-Age'] = '3600'
 
     ※ `your-app-xxxxx-an.a.run.app` は実際のCloud Run URLに置き換えてください。
 
-!!! danger "シナリオ2：悪意のあるサイトからの攻撃"
-
-    **悪意のあるサイト:** `https://evil.com`
-
-    ページ内のJavaScriptで、あなたの `/api/chat` を勝手に呼ぼうとする：
-
-    ```javascript
-    fetch('https://your-app.run.app/api/chat', {
-        method: 'POST',
-        body: JSON.stringify({ message: '...' })
-    });
-    ```
-
-    **ブラウザの動き：**
-
-    1. ブラウザ：「待って！evil.com から your-app へのリクエストだ。許可されてる？」
-    2. サーバーの `Access-Control-Allow-Origin` を確認
-    3. evil.com が許可されていなければ → **ブロック！**
-
-    **→ 許可したい場合は `ALLOWED_ORIGINS` にそのオリジンを追加すればOK！**
-
-    ```python
-    # 例：パートナー企業のサイトからAPIを使えるようにしたい場合
-    ALLOWED_ORIGINS = [
-        'https://your-app.run.app',      # 自分のサイト
-        'https://partner-site.com'       # ← ここに追加！
-    ]
-    ```
-
-**つまりCORSは：**
-- ブラウザが行うセキュリティチェック
-- 「このサイトからのリクエストを許可しますか？」をサーバーに確認
-- サーバーが「OK」と言わなければブロック
-
-!!! info "HTTPメソッドの役割"
-
-    | メソッド | 用途 | 具体例 |
-    |---------|------|--------|
-    | **GET** | データを取得する | ページ表示、ユーザー情報取得 |
-    | **POST** | データを送信・処理する | チャット送信、ログイン処理 |
-    | **OPTIONS** | 事前確認（プリフライト） | 「このリクエスト送っていい？」とブラウザがサーバーに確認 |
-
-    **POSTの動き（イメージ）**
-
-    ```
-    [あなた]                    [API（+1する処理）]
-       │                              │
-       │──── POST { value: 1 } ──────▶│
-       │                              │ ← ここで1+1の処理
-       │◀───── { result: 2 } ─────────│
-    ```
-
-    → データを投げて、API側で処理して、結果が返ってくる
-
-!!! note "OPTIONSリクエストの流れ（プリフライト）"
-
-    ブラウザは「本番のリクエスト」を送る前に、まず「送っていいか？」を確認します。
-
-    ```
-    ブラウザ: 「POSTリクエスト送りたいんだけど、いい？」（OPTIONS）
-        ↓
-    サーバー: 「このオリジンからならOK」または「ダメ」
-        ↓
-    ブラウザ: OKなら本番のPOSTを送信、ダメならブロック
-    ```
-
-    この仕組みにより、許可されていないサイトからの不正なリクエストを防いでいます。
-
-!!! question "登録するオリジンの書き方"
+!!! question "オリジンの書き方"
 
     オリジンは「**プロトコル + ドメイン + ポート**」です。パス（`/api/chat` など）は含めません。
 
@@ -848,10 +1048,6 @@ headers['Access-Control-Max-Age'] = '3600'
     | `https://your-app.run.app` | ✓ | 正しい形式 |
     | `https://your-app.run.app/api/chat` | ✗ | パスは不要 |
     | `your-app.run.app` | ✗ | プロトコルが必要 |
-
-    **何のオリジンを登録する？ → フロントエンド（画面）のオリジン**
-
-    ユーザーがブラウザでアクセスしている画面のオリジンを登録します。
 
 !!! example "複数オリジンを登録する場合"
 
@@ -875,7 +1071,7 @@ headers['Access-Control-Max-Age'] = '3600'
     ALLOWED_ORIGINS = ['*']  # ← どこからでもOK
     ```
 
-    この状態だと、**悪意のあるサイトからAPIを勝手に使われます**。
+    この状態だと、**悪意のあるサイトからAPIを勝手に使われる可能性があります**。
 
     | 被害 | 具体例 |
     |------|--------|
@@ -887,7 +1083,12 @@ headers['Access-Control-Max-Age'] = '3600'
 
 ---
 
-### 5-2. set_security_headers（セキュリティ設定）
+### 5-2. 高度なセキュリティ設定
+
+5-1では**CORSヘッダー**（どのサイトからのアクセスを許可するか）を設定しました。
+
+この関数では、それに加えて**追加のセキュリティヘッダー**を設定します。
+これらは、より高度な攻撃（クリックジャッキング、XSS、ファイル偽装など）を防ぐためのものです。
 
 ```python
 def set_security_headers(headers):
@@ -897,7 +1098,7 @@ def set_security_headers(headers):
     headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
 ```
 
-#### 1行ずつ解説
+#### 各ヘッダーの役割
 
 **1. X-Content-Type-Options**
 ```python
@@ -1032,38 +1233,29 @@ allowed_emails_str = os.environ.get('ALLOWED_EMAILS', '')
 allowed_emails = [e.strip().lower() for e in allowed_emails_str.split(',') if e.strip()]
 ```
 
-**詳細な分解**
-```python
-# 環境変数の例
-# ALLOWED_EMAILS = "tanaka@example.com, yamada@test.com, admin@company.co.jp"
+この2行目は「リスト内包表記」です。
 
-# ステップ1: 環境変数を取得
-allowed_emails_str = os.environ.get('ALLOWED_EMAILS', '')
-# → "tanaka@example.com, yamada@test.com, admin@company.co.jp"
-# （もし環境変数がなければ空文字 '' になる）
+!!! info "基礎知識"
 
-# ステップ2: カンマで分割
-parts = allowed_emails_str.split(',')
-# → ["tanaka@example.com", " yamada@test.com", " admin@company.co.jp"]
-#    ※ 空白が残っている
+    forループとリスト内包表記の基本は [1-8. forループ](#1-8-for-ループ繰り返し処理) と [1-9. リスト内包表記](#1-9-リスト内包表記省略形) で解説しています。
 
-# ステップ3: 各要素を処理
-allowed_emails = []
-for e in parts:
-    cleaned = e.strip()       # 前後の空白を除去
-    if cleaned:               # 空でなければ
-        allowed_emails.append(cleaned.lower())  # 小文字にして追加
+**この行が何をしているか：**
 
-# 結果
-# → ["tanaka@example.com", "yamada@test.com", "admin@company.co.jp"]
+```text
+環境変数: "tanaka@example.com, YAMADA@test.com,  admin@company.co.jp"
+                ↓ split(',') でカンマ分割
+         ["tanaka@example.com", " YAMADA@test.com", "  admin@company.co.jp"]
+                ↓ strip() で空白除去
+         ["tanaka@example.com", "YAMADA@test.com", "admin@company.co.jp"]
+                ↓ lower() で小文字化
+         ["tanaka@example.com", "yamada@test.com", "admin@company.co.jp"]
 ```
 
-**リスト内包表記の読み方**
-```python
-[e.strip().lower() for e in allowed_emails_str.split(',') if e.strip()]
- └──────────────┘     └─────────────────────────────┘    └─────────┘
-    「何をする」         「何から繰り返す」              「条件」
-```
+!!! tip "なぜ lower() が必要？"
+
+    メールアドレスの比較で `Tanaka@Example.com` と `tanaka@example.com` を同じとして扱うため。
+
+---
 
 **8-11行目：許可チェック**
 ```python
