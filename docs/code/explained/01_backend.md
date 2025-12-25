@@ -571,15 +571,37 @@ CORSは「ブラウザが結果を見せない」だけ。
 
 ## 4. 設定部分
 
-### ALLOWED_ORIGINS
+### ALLOWED_ORIGINS（CORS用の許可オリジンリスト）
 
 ```python
 ALLOWED_ORIGINS = ['*']
 ```
 
 **これは何？**
-- どのWebサイトからのアクセスを許可するかのリスト
-- `'*'` = どこからでもOK（開発用）
+
+この変数は**CORS設定**に使用されます。
+具体的には、後述の [5-1. set_cors_headers](#5-1-set_cors_headerscors設定) 関数で参照されます。
+
+```python
+# 5-1. set_cors_headers 内での使用例
+if '*' in ALLOWED_ORIGINS or origin in ALLOWED_ORIGINS:
+    headers['Access-Control-Allow-Origin'] = origin or '*'
+```
+
+| 設定値 | 意味 | 用途 |
+|--------|------|------|
+| `['*']` | どこからでもOK | 開発用（本番では危険） |
+| `['https://your-app.run.app']` | 特定のオリジンのみ許可 | 本番用 |
+
+!!! warning "「許可リスト」との違いに注意"
+
+    | 変数名 | 用途 | 何を制限？ |
+    |--------|------|-----------|
+    | **ALLOWED_ORIGINS** | CORS設定 | どの**サイト**からのアクセスを許可するか |
+    | ALLOWED_EMAILS | ユーザー認証 | どの**メールアドレス**のユーザーを許可するか |
+    | ALLOWED_DOMAINS | ユーザー認証 | どの**ドメイン**のユーザーを許可するか |
+
+    名前が似ていますが、**別の目的**を持っています。
 
 ---
 
