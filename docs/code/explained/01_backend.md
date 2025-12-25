@@ -472,7 +472,7 @@ headers['Access-Control-Max-Age'] = '3600'
     **→ 許可したい場合は `ALLOWED_ORIGINS` にそのオリジンを追加すればOK！**
 
     ```python
-    # 例：パートナー企業のサイトからもアクセスを許可したい場合
+    # 例：パートナー企業のサイトからAPIを使えるようにしたい場合
     ALLOWED_ORIGINS = [
         'https://your-app.run.app',      # 自分のサイト
         'https://partner-site.com'       # ← ここに追加！
