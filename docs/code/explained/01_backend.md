@@ -432,38 +432,50 @@ Browser: "OK, I won't put this page in iframe"
 これは**ブラウザの仕様（ルール）**です。
 Chrome、Firefox、Edge など、すべての主要ブラウザがこのルールに従います。
 
-#### 具体例：CORSヘッダーの動き
+#### CORSの動き（シンプルに）
 
 ```text
-[1] evil.com sends request
-
 evil.com (JavaScript)
    |
-   |  fetch('https://your-app.run.app/api/chat')
+   |  your-app のデータをください
    v
-Server (your-app.run.app)
+サーバー (your-app.run.app)
    |
-   |  Response with header:
-   |  +----------------------------------+
-   |  | Access-Control-Allow-Origin:     |
-   |  |   https://your-app.run.app       |
-   |  +----------------------------------+
-   v
-Browser checks:
-   "Origin is evil.com, but only your-app.run.app is allowed..."
+   |  API処理中...（ここで課金発生！）
    |
+   |  レスポンス + ヘッダー:
+   |  「your-app.run.app だけがデータを受け取れます」
    v
-BLOCKED! (Data not passed to JavaScript)
+ブラウザ
+   |
+   |  evil.com はヘッダーに書いてない...
+   v
+ブロック！（データはJavaScriptに渡さない）
 ```
+
+ヘッダーに記載がないので**データは渡さない**！
+そんな機能を持つのが、**CORS**です。
+
+!!! danger "重要：課金は防げない"
+
+    上の図をよく見てください。
+
+    - サーバーは**処理を実行**している
+    - レスポンスも**返している**
+
+    つまり**APIは使われている = 課金は発生する**！
+
+    CORSが防ぐのは「結果をJavaScriptに渡すこと」だけ。
+    **処理自体は止められません。**
 
 #### つまり
 
 | 疑問 | 答え |
 |------|------|
-| なぜ効果がある？ | ブラウザがヘッダーを読んで従うから |
-| 誰が従う？ | ブラウザ（Chrome、Firefox等） |
-| 強制力は？ | ブラウザの仕様で決まっている（必ず従う） |
-| サーバーは？ | ヘッダーをセットするだけ。判断はブラウザがする |
+| CORSは何をする？ | 許可されてないサイトにはデータを渡さない |
+| 誰が判断する？ | ブラウザ（ヘッダーを見て判断） |
+| 課金は防げる？ | **防げない**（処理は走る） |
+| じゃあ何のため？ | データの**盗み見**を防ぐ |
 
 !!! warning "重要な注意"
 
