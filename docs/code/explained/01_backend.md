@@ -67,81 +67,7 @@ headers['X-Frame-Options'] = 'DENY'    # 追加
 
 ---
 
-### 1-2. in 演算子
-
-**in = 「〜の中に含まれる？」を確認する**
-
-```python
-# リスト（配列）での使用
-fruits = ['りんご', 'みかん', 'ぶどう']
-
-'りんご' in fruits    # → True（含まれる）
-'バナナ' in fruits    # → False（含まれない）
-
-# 文字列での使用
-email = 'tanaka@example.com'
-
-'@' in email          # → True（@が含まれる）
-'@example.com' in email  # → True
-'@test.com' in email     # → False
-```
-
-**if文での使い方**
-```python
-allowed_list = ['tanaka@example.com', 'yamada@test.com']
-email = 'tanaka@example.com'
-
-if email in allowed_list:
-    print('許可されています')
-else:
-    print('許可されていません')
-
-# → 許可されています
-```
-
----
-
-### 1-3. `or` とは？
-
-**`or` = 「または」（どちらかがTrueならTrue）**
-
-```python
-# 条件での使用
-age = 20
-is_student = True
-
-if age >= 18 or is_student:
-    print('OK')  # どちらかがTrueなのでOK
-
-# → OK
-```
-
-**値の選択での使用（これが重要！）**
-```python
-# 「値 or デフォルト値」という書き方
-name = None
-result = name or '名無し'
-print(result)  # → '名無し'
-
-name = '田中'
-result = name or '名無し'
-print(result)  # → '田中'
-```
-
-!!! info "仕組み：A or B の動き"
-
-    1. まず A を確認
-    2. A が「ある」（True相当）なら → **A を返す**
-    3. A が「ない」（False相当）なら → **B を返す**
-
-    **例：**
-
-    - `origin = None` の場合：`origin or '*'` → `'*'` を返す
-    - `origin = 'https://example.com'` の場合：`origin or '*'` → `'https://example.com'` を返す
-
----
-
-### 1-4. if文（条件分岐）
+### 1-2. if文（条件分岐）
 
 **if文 = 条件によって処理を分ける**
 
@@ -201,6 +127,80 @@ else:
     | `!=` | 等しくない | `error != None` |
     | `in` | 含まれる | `'@' in email` |
     | `not` | 否定 | `if not email:` （emailが空なら） |
+
+---
+
+### 1-3. in 演算子
+
+**in = 「〜の中に含まれる？」を確認する**
+
+```python
+# リスト（配列）での使用
+fruits = ['りんご', 'みかん', 'ぶどう']
+
+'りんご' in fruits    # → True（含まれる）
+'バナナ' in fruits    # → False（含まれない）
+
+# 文字列での使用
+email = 'tanaka@example.com'
+
+'@' in email          # → True（@が含まれる）
+'@example.com' in email  # → True
+'@test.com' in email     # → False
+```
+
+**if文での使い方**
+```python
+allowed_list = ['tanaka@example.com', 'yamada@test.com']
+email = 'tanaka@example.com'
+
+if email in allowed_list:
+    print('許可されています')
+else:
+    print('許可されていません')
+
+# → 許可されています
+```
+
+---
+
+### 1-4. `or` とは？
+
+**`or` = 「または」（どちらかがTrueならTrue）**
+
+```python
+# 条件での使用
+age = 20
+is_student = True
+
+if age >= 18 or is_student:
+    print('OK')  # どちらかがTrueなのでOK
+
+# → OK
+```
+
+**値の選択での使用（これが重要！）**
+```python
+# 「値 or デフォルト値」という書き方
+name = None
+result = name or '名無し'
+print(result)  # → '名無し'
+
+name = '田中'
+result = name or '名無し'
+print(result)  # → '田中'
+```
+
+!!! info "仕組み：A or B の動き"
+
+    1. まず A を確認
+    2. A が「ある」（True相当）なら → **A を返す**
+    3. A が「ない」（False相当）なら → **B を返す**
+
+    **例：**
+
+    - `origin = None` の場合：`origin or '*'` → `'*'` を返す
+    - `origin = 'https://example.com'` の場合：`origin or '*'` → `'https://example.com'` を返す
 
 ---
 
@@ -267,132 +267,7 @@ def set_cors_headers(headers, origin):
 
 ---
 
-### 1-6. `with open()` とは？
-
-**`with open()` = ファイルを安全に開いて読む方法**
-
-```python
-with open('front.html', 'r', encoding='utf-8') as f:
-    content = f.read()
-```
-
-!!! note "各部分の意味"
-
-    ```
-    with open('front.html', 'r', encoding='utf-8') as f:
-    ```
-
-    | 部分 | 意味 |
-    |------|------|
-    | `open` | ファイルを開く関数 |
-    | `'front.html'` | ファイル名 |
-    | `'r'` | read（読み取り） |
-    | `encoding='utf-8'` | 文字コード（日本語対応） |
-    | `as f` | 変数名（何でもOK） |
-
-    ```
-    content = f.read()
-    ```
-
-    - `f.read()` → ファイルの中身を全部読む
-    - `content` → 読んだ内容を変数に保存
-
-**なぜ `with` を使う？**
-```python
-# 悪い例（ファイルを閉じ忘れる可能性）
-f = open('file.txt', 'r')
-content = f.read()
-f.close()  # 閉じ忘れると問題が起きる！
-
-# 良い例（withを使うと自動で閉じてくれる）
-with open('file.txt', 'r') as f:
-    content = f.read()
-# ← ここで自動的にファイルが閉じられる
-```
-
-!!! example "イメージ：with = 自動で片付けてくれる仕組み"
-
-    **例：冷蔵庫を開けて食材を取り出す**
-
-    | 方法 | 流れ |
-    |------|------|
-    | 普通 | 冷蔵庫を開ける → 食材を取る → **閉め忘れる！** |
-    | with | 冷蔵庫を開ける → 食材を取る → **自動で閉まる** |
-
----
-
-### 1-7. Base64エンコード・デコードとは？
-
-- **エンコード** = データを別の形式に変換すること
-- **デコード** = 変換されたデータを元に戻すこと
-
-!!! example "日常の例：暗号ごっこ"
-
-    | ステップ | データ |
-    |---------|--------|
-    | 元のメッセージ | 「こんにちは」 |
-    | ↓ エンコード（変換） | |
-    | 変換後 | `44GT44KT44Gr44Gh44Gv` ← 読めない！ |
-    | ↓ デコード（復元） | |
-    | 復元後 | 「こんにちは」 ← 元に戻った！ |
-
-!!! info "なぜBase64を使う？"
-
-    **JWTトークン（ログイン証明書）は3つの部分からできている**
-
-    ```
-    eyJhbGci... . eyJlbWFpbCI... . SflKxwRJ...
-    ```
-
-    | 部分 | 名前 | 役割 |
-    |------|------|------|
-    | 1番目 | ヘッダー | 形式情報 |
-    | 2番目 | ペイロード | ユーザー情報（**メールアドレスがBase64で入っている**） |
-    | 3番目 | 署名 | 改ざん防止 |
-
-**具体例**
-```python
-import base64
-import json
-
-# JWTトークンの例（ペイロード部分）
-encoded = "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ"
-
-# ステップ1: Base64デコード
-decoded_bytes = base64.urlsafe_b64decode(encoded + '==')
-# → b'{"email":"tanaka@example.com","name":"\xe7\x94\xb0\xe4\xb8\xad"}'
-
-# ステップ2: 文字列に変換
-decoded_str = decoded_bytes.decode('utf-8')
-# → '{"email":"tanaka@example.com","name":"田中"}'
-
-# ステップ3: JSONとして解析
-data = json.loads(decoded_str)
-# → {'email': 'tanaka@example.com', 'name': '田中'}
-
-# ステップ4: メールアドレスを取り出す
-email = data.get('email')
-# → 'tanaka@example.com'
-```
-
-**図解**
-```
-eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ
-                            ↓
-                    Base64デコード
-                            ↓
-{"email":"tanaka@example.com","name":"田中"}
-                            ↓
-                    JSONとして解析
-                            ↓
-                    email を取り出す
-                            ↓
-                 tanaka@example.com
-```
-
----
-
-### 1-8. for ループ（繰り返し処理）
+### 1-6. for ループ（繰り返し処理）
 
 **for ループ = リストの中身を1つずつ取り出して処理する**
 
@@ -448,7 +323,7 @@ for domain in allowed_domains:
 
 ---
 
-### 1-9. リスト内包表記（省略形）
+### 1-7. リスト内包表記（省略形）
 
 for ループを**1行で書ける**省略記法です。
 
@@ -520,6 +395,131 @@ emails_str = "tanaka@example.com, YAMADA@test.com,  admin@company.co.jp"
 # 分割 → 空白除去 → 小文字化 を1行で
 emails = [e.strip().lower() for e in emails_str.split(',') if e.strip()]
 # → ['tanaka@example.com', 'yamada@test.com', 'admin@company.co.jp']
+```
+
+---
+
+### 1-8. `with open()` とは？
+
+**`with open()` = ファイルを安全に開いて読む方法**
+
+```python
+with open('front.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+```
+
+!!! note "各部分の意味"
+
+    ```
+    with open('front.html', 'r', encoding='utf-8') as f:
+    ```
+
+    | 部分 | 意味 |
+    |------|------|
+    | `open` | ファイルを開く関数 |
+    | `'front.html'` | ファイル名 |
+    | `'r'` | read（読み取り） |
+    | `encoding='utf-8'` | 文字コード（日本語対応） |
+    | `as f` | 変数名（何でもOK） |
+
+    ```
+    content = f.read()
+    ```
+
+    - `f.read()` → ファイルの中身を全部読む
+    - `content` → 読んだ内容を変数に保存
+
+**なぜ `with` を使う？**
+```python
+# 悪い例（ファイルを閉じ忘れる可能性）
+f = open('file.txt', 'r')
+content = f.read()
+f.close()  # 閉じ忘れると問題が起きる！
+
+# 良い例（withを使うと自動で閉じてくれる）
+with open('file.txt', 'r') as f:
+    content = f.read()
+# ← ここで自動的にファイルが閉じられる
+```
+
+!!! example "イメージ：with = 自動で片付けてくれる仕組み"
+
+    **例：冷蔵庫を開けて食材を取り出す**
+
+    | 方法 | 流れ |
+    |------|------|
+    | 普通 | 冷蔵庫を開ける → 食材を取る → **閉め忘れる！** |
+    | with | 冷蔵庫を開ける → 食材を取る → **自動で閉まる** |
+
+---
+
+### 1-9. Base64エンコード・デコードとは？
+
+- **エンコード** = データを別の形式に変換すること
+- **デコード** = 変換されたデータを元に戻すこと
+
+!!! example "日常の例：暗号ごっこ"
+
+    | ステップ | データ |
+    |---------|--------|
+    | 元のメッセージ | 「こんにちは」 |
+    | ↓ エンコード（変換） | |
+    | 変換後 | `44GT44KT44Gr44Gh44Gv` ← 読めない！ |
+    | ↓ デコード（復元） | |
+    | 復元後 | 「こんにちは」 ← 元に戻った！ |
+
+!!! info "なぜBase64を使う？"
+
+    **JWTトークン（ログイン証明書）は3つの部分からできている**
+
+    ```
+    eyJhbGci... . eyJlbWFpbCI... . SflKxwRJ...
+    ```
+
+    | 部分 | 名前 | 役割 |
+    |------|------|------|
+    | 1番目 | ヘッダー | 形式情報 |
+    | 2番目 | ペイロード | ユーザー情報（**メールアドレスがBase64で入っている**） |
+    | 3番目 | 署名 | 改ざん防止 |
+
+**具体例**
+```python
+import base64
+import json
+
+# JWTトークンの例（ペイロード部分）
+encoded = "eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ"
+
+# ステップ1: Base64デコード
+decoded_bytes = base64.urlsafe_b64decode(encoded + '==')
+# → b'{"email":"tanaka@example.com","name":"\xe7\x94\xb0\xe4\xb8\xad"}'
+
+# ステップ2: 文字列に変換
+decoded_str = decoded_bytes.decode('utf-8')
+# → '{"email":"tanaka@example.com","name":"田中"}'
+
+# ステップ3: JSONとして解析
+data = json.loads(decoded_str)
+# → {'email': 'tanaka@example.com', 'name': '田中'}
+
+# ステップ4: メールアドレスを取り出す
+email = data.get('email')
+# → 'tanaka@example.com'
+```
+
+**図解**
+```
+eyJlbWFpbCI6InRhbmFrYUBleGFtcGxlLmNvbSIsIm5hbWUiOiLnlLDkuK0ifQ
+                            ↓
+                    Base64デコード
+                            ↓
+{"email":"tanaka@example.com","name":"田中"}
+                            ↓
+                    JSONとして解析
+                            ↓
+                    email を取り出す
+                            ↓
+                 tanaka@example.com
 ```
 
 ---
