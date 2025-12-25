@@ -10,10 +10,11 @@
 
 1. [Python基礎：これだけ覚えよう](#1-python基礎これだけ覚えよう)
 2. [ライブラリ読み込み](#2-ライブラリ読み込み)
-3. [設定部分](#3-設定部分)
-4. [ヘルパー関数](#4-ヘルパー関数)
-5. [アクセス制御](#5-アクセス制御)
-6. [メインハンドラ](#6-メインハンドラ)
+3. [セキュリティの全体像](#3-セキュリティの全体像なぜ安全)
+4. [設定部分](#4-設定部分)
+5. [ヘルパー関数](#5-ヘルパー関数)
+6. [アクセス制御](#6-アクセス制御)
+7. [メインハンドラ](#7-メインハンドラ)
 
 ---
 
@@ -289,7 +290,7 @@ from openai import OpenAI
 
 ---
 
-## セキュリティの全体像（なぜ安全？）
+## 3. セキュリティの全体像（なぜ安全？）
 
 コードの詳細に入る前に、**このシステムがどう守られているか**を理解しましょう。
 
@@ -557,16 +558,16 @@ CORSは「ブラウザが結果を見せない」だけ。
 
     | セクション | 対応する防御 | 実行順 |
     |-----------|-------------|:------:|
-    | 5-2. get_email_from_token | JWT検証 | 1 |
-    | 5-1. is_email_allowed | 許可リストチェック | 2 |
-    | 4-1. set_cors_headers | CORSヘッダー設定 | 3 |
+    | 6-2. get_email_from_token | JWT検証 | 1 |
+    | 6-1. is_email_allowed | 許可リストチェック | 2 |
+    | 5-1. set_cors_headers | CORSヘッダー設定 | 3 |
 
     ※ CORSはレスポンスにヘッダーを付けるだけ。
     実際のCORSチェックはブラウザが最後に行います。
 
 ---
 
-## 3. 設定部分
+## 4. 設定部分
 
 ### ALLOWED_ORIGINS
 
@@ -601,9 +602,9 @@ with open('script.js', 'r', encoding='utf-8') as f:
 
 ---
 
-## 4. ヘルパー関数
+## 5. ヘルパー関数
 
-### 4-1. set_cors_headers（CORS設定）
+### 5-1. set_cors_headers（CORS設定）
 
 ```python
 def set_cors_headers(headers, origin):
@@ -849,7 +850,7 @@ headers['Access-Control-Max-Age'] = '3600'
 
 ---
 
-### 4-2. set_security_headers（セキュリティ設定）
+### 5-2. set_security_headers（セキュリティ設定）
 
 ```python
 def set_security_headers(headers):
@@ -940,9 +941,9 @@ headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
 
 ---
 
-## 5. アクセス制御
+## 6. アクセス制御
 
-### 5-1. is_email_allowed（メール許可チェック）
+### 6-1. is_email_allowed（メール許可チェック）
 
 ```python
 def is_email_allowed(email):
@@ -1048,7 +1049,7 @@ for domain in allowed_domains:
 
 ---
 
-### 5-2. get_email_from_token（トークンからメール取得）
+### 6-2. get_email_from_token（トークンからメール取得）
 
 ```python
 def get_email_from_token(id_token):
@@ -1125,9 +1126,9 @@ eyJhbGci...  .  eyJlbWFpbCI...  .  SflKxwRJ...
 
 ---
 
-## 6. メインハンドラ
+## 7. メインハンドラ
 
-### 6-1. エントリポイントの定義
+### 7-1. エントリポイントの定義
 
 ```python
 @functions_framework.http
@@ -1151,7 +1152,7 @@ def app(request):
     | `def app(request):` | 「はい！私が受付係です！」 |
     | `@functions_framework.http` | 「この人を受付係として登録してください」 |
 
-### 6-2. requestオブジェクト
+### 7-2. requestオブジェクト
 
 ```python
 def app(request):
@@ -1165,7 +1166,7 @@ def app(request):
 | `request.headers` | ヘッダー情報 | `{'Authorization': 'Bearer xxx'}` |
 | `request.get_json()` | ボディ（JSON） | `{'message': 'こんにちは'}` |
 
-### 6-3. 戻り値
+### 7-3. 戻り値
 
 ```python
 return (HTML_CONTENT, 200, headers)
